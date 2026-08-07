@@ -1,0 +1,617 @@
+/*=========================================
+        GAME GRID - ADMIN PANEL
+==========================================*/
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+}
+
+body{
+    background:#edf2f7;
+    color:#333;
+}
+
+/*================ HEADER ================*/
+
+header{
+    background:linear-gradient(90deg,#16213e,#2c4fb8);
+    box-shadow:0 5px 15px rgba(0,0,0,.25);
+}
+
+header h1{
+    font-size:38px;
+    letter-spacing:2px;
+}
+
+header p{
+    margin-top:6px;
+    font-size:18px;
+    color:#dbeafe;
+}
+
+/*========== NAVBAR ==========*/
+
+.navbar{
+    background:linear-gradient(90deg,#16213e,#2c4fb8);
+    display:flex;
+    align-items:center;
+    padding:0 25px;
+    height:85px;
+    box-shadow:0 5px 15px rgba(0,0,0,.25);
+}
+
+/* ===== Login Logo ===== */
+
+.login-logo{
+    display:flex;
+    justify-content:center;
+    margin-bottom:10px;
+}
+
+.login-logo img{
+    width:150px;
+    height:auto;
+}
+
+/*================ ALERT MESSAGES ================*/
+
+.alert-error {
+    background: #fee2e2;
+    color: #b91c1c;
+    border: 1px solid #fca5a5;
+    border-left: 5px solid #dc2626;
+    padding: 12px 18px;
+    border-radius: 10px;
+    margin: 15px auto 20px;
+    max-width: 600px;
+    font-weight: 600;
+    font-size: 15px;
+    text-align: center;
+    animation: shake 0.3s ease-in-out;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-6px); }
+    40% { transform: translateX(6px); }
+    60% { transform: translateX(-4px); }
+    80% { transform: translateX(4px); }
+}
+
+/* Logo */
+
+.logo{
+    display:flex;
+    align-items:center;
+    flex-shrink:0;
+    margin-right:30px;
+}
+
+.logo img{
+    width:50px;
+    margin-right:12px;
+}
+
+.logo h1{
+    color:white;
+    font-size:28px;
+}
+
+/* Scrollable Area */
+
+.nav-scroll{
+    flex:1;
+    overflow-x:auto;
+    overflow-y:hidden;
+    scrollbar-width:thin;
+    scrollbar-color:#22c55e transparent;
+}
+
+/* Chrome */
+
+.nav-scroll::-webkit-scrollbar{
+    height:7px;
+}
+
+.nav-scroll::-webkit-scrollbar-thumb{
+    background:#22c55e;
+    border-radius:10px;
+}
+
+/* Links */
+
+.nav-links{
+    display:flex;
+    width:max-content;
+    gap:35px;
+    padding:0 10px;
+}
+
+.nav-links a{
+    color:white;
+    text-decoration:none;
+    font-size:17px;
+    font-weight:600;
+    white-space:nowrap;
+    line-height:85px;
+    transition:.3s;
+}
+
+.nav-links a:hover{
+    color:#22c55e;
+}
+
+/* ================= PROFILE PAGE ================= */
+
+.profile-container {
+    background: #ffffff;
+    padding: 32px;
+    border-radius: 18px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    margin: 20px auto;
+}
+
+.profile-container h2 {
+    color: #164194;
+    font-size: 28px;
+    border-left: 6px solid #20c56a;
+    padding-left: 14px;
+    margin-bottom: 25px;
+}
+
+/* Profile Information */
+
+.profile-info {
+    background: #ffffff;
+    padding: 40px;
+    border-radius: 18px;
+    border-left: 6px solid #20c56a;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+    margin-bottom: 80px;
+}
+
+.profile-info p {
+    font-size: 18px;
+    margin: 20px 0;
+    color: #333;
+}
+
+.profile-info strong {
+    display: inline-block;
+    width: 150px;
+    color: #164194;
+}
+
+/* Update Profile */
+
+.profile-update {
+    background: #ffffff;
+    padding: 45px;
+    border-radius: 18px;
+    border-top: 5px solid #2860e5;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+}
+
+.profile-update h3 {
+    color: #164194;
+    font-size: 20px;
+    margin-bottom: 30px;
+}
+
+.profile-update form {
+    max-width: 780px;
+    margin: auto;
+}
+
+.profile-update label {
+    display: block;
+    color: #164194;
+    font-weight: 600;
+    margin-bottom: 8px;
+    margin-top: 20px;
+}
+
+.profile-update input {
+    width: 100%;
+    padding: 15px;
+    border: 1px solid #d0d5dd;
+    border-radius: 9px;
+    font-size: 16px;
+    outline: none;
+    margin-bottom: 5px;
+}
+
+.profile-update input:focus {
+    border-color: #2860e5;
+    box-shadow: 0 0 0 2px rgba(40, 96, 229, 0.1);
+}
+
+.update-btn {
+    background: #2860e5;
+    color: white;
+    border: none;
+    padding: 14px 32px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 25px;
+}
+
+.update-btn:hover {
+    background: #164dcc;
+}
+
+/* ===== Profile Dropdown ===== */
+
+.profile-dropdown{
+    position:relative;
+    display:flex;
+    align-items:center;
+    flex-shrink:0;
+    margin-left:20px;
+}
+
+.profile-img{
+    width:50px;
+    height:50px;
+    border-radius:50%;
+    border:3px solid #fff;
+    cursor:pointer;
+    object-fit:cover;
+    transition:0.3s;
+}
+
+.profile-img:hover{
+    border-color:#22c55e;
+    transform:scale(1.05);
+}
+
+.dropdown-content{
+    display:none;
+    position:absolute;
+    top:65px;
+    right:0;
+    width:220px;
+    background:#fff;
+    border-radius:12px;
+    box-shadow:0 10px 25px rgba(0,0,0,.25);
+    overflow:hidden;
+    z-index:9999;
+}
+
+.dropdown-content.show{
+    display:block;
+}
+
+.dropdown-content a{
+    display:block;
+    padding:14px 18px;
+    color:#222 !important;
+    text-decoration:none;
+    font-size:16px;
+    font-weight:600;
+    transition:0.3s;
+}
+
+.dropdown-content a:hover{
+    background:#2563eb;
+    color:#fff !important;
+}
+
+/*================ CONTAINER ================*/
+
+.container{
+    width:92%;
+    max-width:1300px;
+    margin:30px auto;
+    background:white;
+    border-radius:15px;
+    padding:30px;
+    box-shadow:0 8px 20px rgba(0,0,0,.12);
+    min-height:600px;
+}
+
+/*================ HEADINGS ================*/
+
+h2{
+    color:#1E3A8A;
+    margin-bottom:20px;
+    border-left:6px solid #22C55E;
+    padding-left:12px;
+}
+
+h3{
+    margin-bottom:12px;
+    color:#2563EB;
+}
+
+/*================ DASHBOARD CARDS ================*/
+
+.dashboard{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+    gap:20px;
+    margin:25px 0;
+}
+
+.card{
+    background:white;
+    padding:25px;
+    border-radius:12px;
+    border-left:6px solid #2563EB;
+    box-shadow:0 5px 15px rgba(0,0,0,.12);
+    transition:.3s;
+}
+
+.card:hover{
+    transform:translateY(-8px);
+    box-shadow:0 10px 20px rgba(0,0,0,.18);
+}
+
+.card h3{
+    color:#2563EB;
+    margin-bottom:10px;
+}
+
+.card p{
+    color:#555;
+}
+
+/*================ ACTION BUTTONS ================*/
+
+.action-btn {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    margin: 2px;
+    transition: .3s;
+}
+
+.action-btn.edit {
+    background: #2563eb;
+    color: white !important;
+}
+
+.action-btn.edit:hover {
+    background: #1d4ed8;
+    transform: translateY(-2px);
+}
+
+.action-btn.delete {
+    background: #fee2e2;
+    color: #b91c1c !important;
+}
+
+.action-btn.delete:hover {
+    background: #fca5a5;
+    transform: translateY(-2px);
+}
+
+.action-btn.view {
+    background: #dcfce7;
+    color: #15803d !important;
+}
+
+.action-btn.view:hover {
+    background: #86efac;
+    transform: translateY(-2px);
+}
+
+/*================ STATISTICS CARDS ================*/
+
+.stat-card{
+    background:linear-gradient(135deg,#2563EB,#1E3A8A);
+    color:white;
+    border-radius:12px;
+    padding:25px;
+    text-align:center;
+    box-shadow:0 5px 15px rgba(0,0,0,.2);
+}
+
+.stat-card h2{
+    color:white;
+    border:none;
+    padding:0;
+    margin:0;
+}
+
+.stat-card h4{
+    margin-top:10px;
+    font-weight:normal;
+}
+
+/*================ TABLES ================*/
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:20px;
+    background:white;
+    border-radius:10px;
+    overflow:hidden;
+    box-shadow:0 5px 15px rgba(0,0,0,.1);
+}
+
+th{
+    background:#1E3A8A;
+    color:white;
+    padding:14px;
+}
+
+td{
+    padding:12px;
+    border:1px solid #ddd;
+    text-align:center;
+}
+
+tr:nth-child(even){
+    background:#f7f9fc;
+}
+
+tr:hover{
+    background:#dbeafe;
+}
+
+/*================ FORMS ================*/
+
+form{
+    width:100%;
+    max-width:700px;
+    margin:auto;
+}
+
+label{
+    display:block;
+    margin-top:15px;
+    font-weight:bold;
+    color:#1E3A8A;
+}
+
+input,
+select,
+textarea{
+    width:100%;
+    padding:12px;
+    margin-top:8px;
+    border:1px solid #ccc;
+    border-radius:8px;
+    font-size:15px;
+}
+
+textarea{
+    resize:vertical;
+}
+
+/*================ BUTTONS ================*/
+
+button{
+    background:#2563EB;
+    color:white;
+    border:none;
+    padding:12px 22px;
+    border-radius:30px;
+    cursor:pointer;
+    margin-top:20px;
+    font-size:16px;
+    transition:.3s;
+}
+
+button:hover{
+    background:#1D4ED8;
+    transform:scale(1.05);
+}
+
+/* Secondary Button */
+
+.btn-green{
+    background:#22C55E;
+}
+
+.btn-green:hover{
+    background:#16A34A;
+}
+
+.btn-red{
+    background:#EF4444;
+}
+
+.btn-red:hover{
+    background:#DC2626;
+}
+
+.btn-orange{
+    background:#F97316;
+}
+
+.btn-orange:hover{
+    background:#EA580C;
+}
+
+/*================ NOTIFICATION BOX ================*/
+
+.notification{
+    background:#ECFDF5;
+    border-left:6px solid #22C55E;
+    padding:18px;
+    border-radius:8px;
+    margin-bottom:15px;
+}
+
+/*================ REPORT BOX ================*/
+
+.report-box{
+    background:#f8fafc;
+    border-left:6px solid #2563EB;
+    padding:20px;
+    border-radius:10px;
+    margin-bottom:20px;
+}
+
+/*================ PROFILE BOX ================*/
+
+.profile-box{
+    background:#f8fafc;
+    padding:25px;
+    border-radius:10px;
+    box-shadow:0 3px 10px rgba(0,0,0,.1);
+}
+
+/*================ LINKS ================*/
+
+a{
+    color:#2563EB;
+    text-decoration:none;
+}
+
+a:hover{
+    color:#22C55E;
+}
+
+/*================ FOOTER ================*/
+
+footer{
+    background:#111827;
+    color:white;
+    text-align:center;
+    padding:18px;
+    margin-top:40px;
+}
+
+footer p{
+    margin:0;
+}
+
+/* Mobile */
+@media(max-width:768px){
+
+.navbar{
+    padding:15px;
+    flex-direction:column;
+    align-items:flex-start;
+    height:auto;
+}
+
+.logo{
+    margin-bottom:15px;
+}
+
+.nav-scroll{
+    width:100%;
+}
+
+.nav-links{
+    gap:25px;
+}
+
+.nav-links a{
+    line-height:40px;
+}
+
+}
