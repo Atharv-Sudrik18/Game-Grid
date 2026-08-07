@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/user_style.css') }}?v=1">
+    <title>Base User Panel</title>
+</head>
+
+<body>
+
+    <!-- <header> -->
+
+        <nav class="navbar">
+
+            <div class="logo">
+                <img src="{{ url_for('static', filename='images/logo.png') }}">
+                <h1>Game Grid</h1>
+            </div>
+
+            <div class="nav-links">
+                <a href="{{ url_for('user.user_dashboard') }}">Dashboard</a>
+                <a href="{{ url_for('user.user_tournaments') }}">Tournaments</a>
+                <a href="{{ url_for('user.user_registration') }}">Registration</a>
+                <a href="{{ url_for('user.user_results') }}">Results</a>
+                <a href="{{ url_for('user.user_notifications') }}">Notifications</a>
+                <a href="{{ url_for('user.chatbox') }}">AI Assistant</a>
+            </div>
+
+            <div class="profile-dropdown">
+
+                <img src="{{ url_for('static', filename='images/profile.png') }}" class="profile-img"
+                    onclick="toggleMenu()">
+
+                <div class="dropdown-content" id="profileMenu">
+                    
+                    <a href="{{ url_for('user.user_logout') }}">Logout</a>
+                    <a href="{{ url_for('user.user_profile') }}">Profile</a>
+                </div>
+
+            </div>
+
+            <script>
+                function toggleMenu(event) {
+                    event.stopPropagation();
+                    document.getElementById("profileMenu").classList.toggle("show");
+                }
+
+                document.querySelector(".profile-img").addEventListener("click", toggleMenu);
+
+                document.addEventListener("click", function () {
+                    document.getElementById("profileMenu").classList.remove("show");
+                });
+
+                document.getElementById("profileMenu").addEventListener("click", function (event) {
+                    event.stopPropagation();
+                });
+            </script>
+
+        </nav>
+    <!-- </header> -->
+
+
+    <div class="container">
+        {% block content %}
+
+        {% endblock %}
+    </div>
+
+    <footer>
+        <p>© 2026 Game Grid. All rights reserved.</p>
+    </footer>
+
+</body>
+
+</html>
+```

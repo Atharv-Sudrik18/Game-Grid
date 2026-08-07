@@ -1,0 +1,62 @@
+{% extends "user/user_base.html" %}
+
+
+{% block title %}
+Dashboard
+{% endblock %}
+
+
+{% block content %}
+
+<div class="welcome-banner">
+    <div>
+        <h2 class="no-border">Welcome{% if session.get("username") %}, {{ session["username"] }}{% endif %} 👋</h2>
+        <p>Here's what's happening with your tournaments on Game Grid.</p>
+    </div>
+</div>
+
+<div class="dashboard">
+    <div class="card stat-card">
+        <h3>Registered Tournaments</h3>
+        <p class="stat-number">{{ my_registrations|length }}</p>
+    </div>
+</div>
+
+<br><br>
+<h2>My Registered Tournaments</h2>
+
+{% if my_registrations %}
+<table>
+    <tr>
+        <th>Tournament</th>
+        <th>Game</th>
+        <th>Start Date</th>
+        <th>Venue</th>
+        <th>Team Name</th>
+        <th>Registered On</th>
+        <th>Action</th>
+    </tr>
+
+    {% for reg in my_registrations %}
+    <tr>
+        <td>{{ reg.tournament_name }}</td>
+        <td><span class="game-badge">{{ reg.game }}</span></td>
+        <td>{{ reg.start_date }}</td>
+        <td>{{ reg.venue }}</td>
+        <td>{{ reg.team_name }}</td>
+        <td>{{ reg.registered_on }}</td>
+        <td>
+            <a class="action-btn edit" href="{{ url_for('user.edit_registration', reg_id=reg.id) }}">Edit</a>
+            <a class="action-btn delete" href="{{ url_for('user.delete_registration', reg_id=reg.id) }}" onclick="return confirm('Delete this registration?');">Delete</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<div class="empty-state">
+    <p>You haven't registered for any tournament yet.</p>
+    <a class="action-btn edit" href="{{ url_for('user.user_registration') }}">Register Now</a>
+</div>
+{% endif %}
+
+{% endblock %}

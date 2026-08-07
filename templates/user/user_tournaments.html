@@ -1,0 +1,42 @@
+{% extends "user/user_base.html" %}
+
+{% block title %}
+Tournaments
+{% endblock %}
+
+{% block content %}
+
+<h2>Available Tournaments</h2>
+<br>
+
+
+<table>
+
+<tr>
+    <th>ID</th>
+    <th>Name</th>
+    <th>Game</th>
+    <th>Start Date</th>
+    <th>Venue</th>
+    <th>Action</th>
+</tr>
+
+{% for tournament in tournaments %}
+<tr>
+    <td>{{ tournament.id }}</td>
+    <td>{{ tournament.tournament_name }}</td>
+    <td>{{ tournament.game }}</td>
+    <td>{{ tournament.start_date }}</td>
+    <td>{{ tournament.venue }}</td>
+    <td>
+        <a href="{{ url_for('user.user_view_matches', tournament_id=tournament.id) }}">
+            View Matches
+        </a>
+    </td>
+</tr>
+
+{% endfor %}
+
+</table>
+
+{% endblock %}

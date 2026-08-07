@@ -1,0 +1,40 @@
+{% extends "user/user_base.html" %}
+
+{% block content %}
+
+<h2>Game Grid AI Assistant</h2>
+
+<input type="text" id="message" placeholder="Ask your question...">
+<button onclick="sendMessage()">Send</button>
+<br><br>
+
+<div id="reply"></div>
+
+<script>
+
+function sendMessage(){
+
+    let message = document.getElementById("message").value;
+
+    fetch("/user/chat",{
+        method:"POST",
+        headers:{
+            "Content-Type":"application/json"
+        },
+        body:JSON.stringify({
+            message:message
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById("reply").innerHTML = data.reply;
+    })
+    .catch(error => {
+        console.log(error);
+    });
+
+}
+
+</script>
+
+{% endblock %}

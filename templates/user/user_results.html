@@ -1,0 +1,41 @@
+{% extends "user/user_base.html" %}
+
+{% block title %}
+Results
+{% endblock %}
+
+{% block content %}
+
+<h2>Match Results</h2>
+<br>
+
+
+<table>
+
+<tr>
+    <th>Tournament</th>
+    <th>Match No</th>
+    <th>Team A</th>
+    <th>Team B</th>
+    <th>Score</th>
+    <th>Winner</th>
+    <th>Date</th>
+</tr>
+
+{% for result in results %}
+
+<tr>
+    <td>{{ result.tournament_name }}</td>
+    <td>{{ result.match_no }}</td>
+    <td>{{ result.team_a }}</td>
+    <td>{{ result.team_b }}</td>
+    <td>{{ result.score_team_a }} - {{ result.score_team_b }}</td>
+    <td>{{ result.winner }}</td>
+    <td>{{ result.match_date }}</td>
+</tr>
+
+{% endfor %}
+
+</table>
+
+{% endblock %}

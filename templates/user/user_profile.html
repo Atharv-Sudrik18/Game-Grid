@@ -1,0 +1,44 @@
+{% extends "user/user_base.html" %}
+
+{% block title %}
+Profile
+{% endblock %}
+
+{% block content %}
+
+<h2>My Profile</h2>
+<div class="profile-box">
+
+    <p><strong>Full Name:</strong> {{ user.fullname }}</p>
+    <p><strong>Username:</strong> {{ user.username }}</p>
+    <p><strong>Email:</strong> {{ user.email }}</p>
+    <p><strong>Mobile:</strong> {{ user.mobile }}</p>
+
+</div>
+<br><br>
+
+<div class="profile-form">
+    <h3>Update Profile</h3>
+
+    <form action="{{ url_for('user.update_profile') }}" method="POST">
+
+        <label>Full Name</label>
+        <input type="text" name="fullname" value="{{ user.fullname }}">
+
+        <label>Email</label>
+        <input type="email" name="email" value="{{ user.email }}">
+
+        <label>Mobile</label>
+        <input type="text" name="mobile" value="{{ user.mobile }}">
+
+        <label>New Password</label>
+        <input type="password" name="password" placeholder="Leave blank to keep current password">
+
+        <button class="update-btn" type="submit">
+            Update Profile
+        </button>
+
+    </form>
+</div>
+
+{% endblock %}

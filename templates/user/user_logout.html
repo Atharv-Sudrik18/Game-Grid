@@ -1,0 +1,17 @@
+{% extends "user/user_base.html" %}
+
+{% block title %}
+Logout
+{% endblock %}
+
+{% block content %}
+
+<h2>Logout</h2>
+<p>Are you sure you want to logout?</p>
+<br>
+
+<a href="{{ url_for('user.user_logout') }}"><button type="button">Yes, Logout</button></a>
+
+<a href="{{ url_for('user.user_dashboard') }}"><button type="button">Cancel</button></a>
+
+{% endblock %}
