@@ -1,0 +1,105 @@
+{% extends "admin/admin_base.html" %}
+
+{% block title %}
+Edit Tournament
+{% endblock %}
+
+{% block content %}
+
+<h2>Edit Tournament</h2>
+<br>
+
+<form method="POST">
+
+    <label><b>Tournament Name</b></label>
+    <input type="text"name="name"value="{{ tournament.name }}"required>
+
+    <label><b>Game</b></label>
+    <input type="text"
+           name="game"
+           value="{{ tournament.game }}"
+           required>
+
+    <label><b>Tournament Type</b></label>
+    <select name="type">
+
+        <option value="Knockout"
+        {% if tournament.type == "Knockout" %}selected{% endif %}>
+        Knockout
+        </option>
+
+        <option value="League"
+        {% if tournament.type == "League" %}selected{% endif %}>
+        League
+        </option>
+
+        <option value="Round Robin"
+        {% if tournament.type == "Round Robin" %}selected{% endif %}>
+        Round Robin
+        </option>
+
+    </select>
+
+    <label><b>Start Date</b></label>
+    <input type="date"
+           name="start_date"
+           value="{{ tournament.start_date }}"
+           required>
+
+    <label><b>End Date</b></label>
+    <input type="date"
+           name="end_date"
+           value="{{ tournament.end_date }}"
+           required>
+
+    <label><b>Venue</b></label>
+    <input type="text"
+           name="venue"
+           value="{{ tournament.venue }}"
+           required>
+
+    <label><b>Maximum Teams</b></label>
+    <input type="number"
+           name="max_teams"
+           value="{{ tournament.max_teams }}"
+           required>
+
+    <label><b>Registration Last Date</b></label>
+    <input type="date"
+           name="last_date"
+           value="{{ tournament.last_date }}"
+           required>
+
+    <label><b>Status</b></label>
+
+    <select name="status">
+
+        <option value="Upcoming"
+        {% if tournament.status == "Upcoming" %}selected{% endif %}>
+        Upcoming
+        </option>
+
+        <option value="Ongoing"
+        {% if tournament.status == "Ongoing" %}selected{% endif %}>
+        Ongoing
+        </option>
+
+        <option value="Completed"
+        {% if tournament.status == "Completed" %}selected{% endif %}>
+        Completed
+        </option>
+
+    </select>
+    <br><br>
+
+    <button type="submit">
+        Update Tournament
+    </button>
+
+    <button type="reset">
+        Reset
+    </button>
+
+</form>
+
+{% endblock %}

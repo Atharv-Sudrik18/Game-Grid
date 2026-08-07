@@ -1,0 +1,55 @@
+{% extends "admin/admin_base.html" %}
+
+{% block title %}
+Manage Tournaments
+{% endblock %}
+
+{% block content %}
+
+<h2>Manage Tournaments</h2>
+<br>
+
+<a href="{{ url_for('admin.create_tournament')}}" class="btn btn-primary">
+    + Create New Tournament
+</a>
+
+<br>
+
+<table>
+
+    <tr>
+        <th>ID</th>
+        <th>Tournament Name</th>
+        <th>Game</th>
+        <th>Start Date</th>
+        <th>End Date</th>
+        <th>Venue</th>
+        <th>Status</th>
+        <th>Action</th>
+    </tr>
+
+    {% for tournament in tournaments %}
+
+    <tr>
+
+        <td>{{ tournament.id }}</td>
+        <td>{{ tournament.tournament_name }}</td>
+        <td>{{ tournament.game }}</td>
+        <td>{{ tournament.start_date }}</td>
+        <td>{{ tournament.end_date }}</td>
+        <td>{{ tournament.venue }}</td>
+        <td>{{ tournament.status }}</td>
+
+        <td>
+            <a class="action-btn edit" href="{{ url_for('admin.edit_tournament', id=tournament.id) }}">Edit</a>
+            <a class="action-btn view" href="{{ url_for('admin.add_matches', tournament_id=tournament.id) }}">Manage Matches</a>
+            <a class="action-btn delete" href="{{ url_for('admin.delete_tournament', id=tournament.id) }}" onclick="return confirm('Delete this tournament? This also removes its matches and registrations.');">Delete</a>
+        </td>
+
+    </tr>
+
+    {% endfor %}
+
+</table>
+
+{% endblock %}

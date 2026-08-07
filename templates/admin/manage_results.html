@@ -1,0 +1,90 @@
+{% extends "admin/admin_base.html" %}
+
+{% block title %}
+Manage Results
+{% endblock %}
+
+{% block content %}
+
+<h2>Manage Tournament Results</h2>
+<br>
+
+<form action="{{ url_for('admin.manage_results') }}" method="POST">
+
+    <label><b>Select Tournament</b></label>
+    <select name="tournament_id" required>
+
+        <option value="">-- Select Tournament --</option>
+
+        {% for tournament in tournaments %}
+        <option value="{{ tournament.id }}">
+            {{ tournament.name }}
+        </option>
+        {% endfor %}
+
+    </select>
+
+    <label><b>Winner Team</b></label>
+    <input type="text"
+           name="winner"
+           placeholder="Enter Winner Team Name"
+           required>
+
+    <label><b>Runner-Up Team</b></label>
+    <input type="text"
+           name="runner_up"
+           placeholder="Enter Runner-Up Team Name"
+           required>
+
+    <label><b>Score</b></label>
+    <input type="text"
+           name="score"
+           placeholder="Example: 3 - 1"
+           required>
+
+    <label><b>Result Date</b></label>
+    <input type="date"
+           name="result_date"
+           required>
+
+    <br><br>
+
+    <button type="submit">
+        Save Result
+    </button>
+
+</form>
+<br><br>
+
+<h2>Published Results</h2>
+<br>
+
+<table>
+
+    <tr>
+        <th>ID</th>
+        <th>Tournament</th>
+        <th>Winner</th>
+        <th>Runner-Up</th>
+        <th>Score</th>
+        <th>Date</th>
+    </tr>
+
+    {% for result in results %}
+
+    <tr>
+
+        <td>{{ result.id }}</td>
+        <td>{{ result.tournament }}</td>
+        <td>{{ result.winner }}</td>
+        <td>{{ result.runner_up }}</td>
+        <td>{{ result.score }}</td>
+        <td>{{ result.result_date }}</td>
+
+    </tr>
+
+    {% endfor %}
+
+</table>
+
+{% endblock %}

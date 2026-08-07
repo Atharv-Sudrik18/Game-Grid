@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin_style.css') }}">
+    <title>Base Admin Panel</title>
+</head>
+
+<body>
+
+    <header>
+
+        <nav class="navbar">
+
+            <div class="logo">
+                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo">
+                <h1>Game Grid</h1>
+            </div>
+
+            <div class="nav-scroll">
+
+                <div class="nav-links">
+                    <a href="{{ url_for('admin.admin_dashboard') }}">Dashboard</a>
+                    <a href="{{ url_for('admin.view_registrations') }}">Registrations</a>
+                    <a href="{{ url_for('admin.manage_users') }}">Manage Users</a>
+                    <a href="{{ url_for('admin.manage_tournaments') }}">Manage Tournaments</a>
+                    <a href="{{ url_for('admin.create_tournament') }}">Create Tournament</a>
+                    <a href="{{ url_for('admin.manage_results') }}">Results</a>
+                    <a href="{{ url_for('admin.manage_notifications') }}">Notifications</a>
+                    <a href="{{ url_for('admin.reports') }}">Reports</a>
+                </div>
+
+            </div>
+
+            <div class="profile-dropdown">
+
+                <img src="{{ url_for('static', filename='images/profile.png') }}" class="profile-img"
+                    onclick="toggleMenu()">
+
+                <div class="dropdown-content" id="profileMenu">
+
+                    <a href="{{ url_for('admin.admin_logout') }}">Logout</a>
+                    <a href="{{ url_for('admin.admin_profile') }}">Profile</a>
+
+                </div>
+
+            </div>
+
+            <script>
+                function toggleMenu(event) {
+                    event.stopPropagation();
+                    document.getElementById("profileMenu").classList.toggle("show");
+                }
+
+                document.querySelector(".profile-img").addEventListener("click", toggleMenu);
+
+                document.addEventListener("click", function () {
+                    document.getElementById("profileMenu").classList.remove("show");
+                });
+
+                document.getElementById("profileMenu").addEventListener("click", function (event) {
+                    event.stopPropagation();
+                });
+            </script>
+
+        </nav>
+
+    </header>
+
+
+
+    <div class="container">
+        {% block content %}
+
+        {% endblock %}
+    </div>
+
+    <footer>
+        <p>© 2026 Game Grid. All rights reserved.</p>
+    </footer>
+
+</body>
+
+</html>

@@ -1,0 +1,66 @@
+{% extends "admin/admin_base.html" %}
+
+{% block title %}
+Admin Profile
+{% endblock %}
+
+{% block content %}
+
+<div class="profile-container">
+
+    <h2>Admin Profile</h2>
+
+    <div class="profile-details">
+
+        <p>
+            <strong>Full Name:</strong>
+            {{ admin.fullname }}
+        </p>
+
+        <p>
+            <strong>Username:</strong>
+            {{ admin.username }}
+        </p>
+
+        <p>
+            <strong>Email:</strong>
+            {{ admin.email }}
+        </p>
+
+        <p>
+            <strong>Mobile:</strong>
+            {{ admin.mobile }}
+        </p>
+    </div>
+    <br><br>
+
+    <h2>Update Profile</h2>
+    <form action="{{ url_for('admin.admin_profile') }}" method="POST">
+
+        <label>Full Name</label>
+        <input type="text" name="fullname" value="{{ admin.fullname }}" required>
+
+        <label>Username</label>
+        <input type="text" name="username" value="{{ admin.username }}" required>
+
+        <label>Email</label>
+        <input type="email" name="email" value="{{ admin.email }}" required>
+
+        <label>Mobile</label>
+        <input type="text" name="mobile" value="{{ admin.mobile }}" required>
+
+        <label>New Password</label>
+        <input type="password" name="new_password" placeholder="Leave blank to keep current password">
+
+        <label>Confirm New Password</label>
+        <input type="password" name="confirm_password" placeholder="Confirm new password">
+
+        <button class="update-btn" type="submit">
+            Update Profile
+        </button>
+
+    </form>
+
+</div>
+
+{% endblock %}

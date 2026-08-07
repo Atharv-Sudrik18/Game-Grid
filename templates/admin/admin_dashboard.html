@@ -1,0 +1,70 @@
+{% extends "admin/admin_base.html" %}
+
+{% block title %}
+Admin Dashboard
+{% endblock %}
+
+{% block content %}
+
+<h2>Admin Dashboard</h2>
+<p>Welcome to the <strong>Game Grid</strong> Admin Panel.</p>
+<br>
+
+
+<table>
+    <tr>
+        <th>Module</th>
+        <th>Status</th>
+    </tr>
+
+    <tr>
+        <td>Total Users</td>
+        <td>{{ total_users }}</td>
+    </tr>
+
+    <tr>
+        <td>Total Tournaments</td>
+        <td>{{ total_tournaments }}</td>
+    </tr>
+
+    <tr>
+        <td>Registered Teams</td>
+        <td>{{ total_registrations }}</td>
+    </tr>
+
+    <tr>
+        <td>Completed Matches</td>
+        <td>{{ completed_matches }}</td>
+    </tr>
+
+    <tr>
+        <td>Pending Results</td>
+        <td>{{ pending_results }}</td>
+    </tr>
+
+</table>
+<br><br>
+
+
+<h2>Recent Activities</h2>
+<table>
+    <tr>
+        <th>Date</th>
+        <th>Activity</th>
+    </tr>
+
+    {% for activity in recent_activities %}
+    <tr>
+        <td>{{ activity.registered_on }}</td>
+        <td>New team registered: {{ activity.team_name }}</td>
+    </tr>
+    {% else %}
+    <tr>
+        <td>--/--/----</td>
+        <td>No recent activity available.</td>
+    </tr>
+    {% endfor %}
+
+</table>
+
+{% endblock %}

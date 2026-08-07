@@ -1,0 +1,98 @@
+{% extends "admin/admin_base.html" %}
+
+{% block title %}
+Reports
+{% endblock %}
+
+{% block content %}
+
+<h2>System Reports</h2>
+<br>
+
+<table>
+
+    <tr>
+        <th>Report</th>
+        <th>Total</th>
+    </tr>
+
+    <tr>
+        <td>Total Users</td>
+        <td>{{ total_users }}</td>
+    </tr>
+
+    <tr>
+        <td>Total Tournaments</td>
+        <td>{{ total_tournaments }}</td>
+    </tr>
+
+    <tr>
+        <td>Total Registrations</td>
+        <td>{{ total_registrations }}</td>
+    </tr>
+
+    <tr>
+        <td>Total Results Published</td>
+        <td>{{ total_results }}</td>
+    </tr>
+
+    <tr>
+        <td>Total Notifications</td>
+        <td>{{ total_notifications }}</td>
+    </tr>
+
+</table>
+<br><br>
+
+<h2>System Summary</h2>
+<br>
+
+<table>
+
+    <tr>
+        <th>Section</th>
+        <th>Status</th>
+    </tr>
+
+    <tr>
+        <td>User Management</td>
+        <td>Active</td>
+    </tr>
+
+    <tr>
+        <td>Tournament Management</td>
+        <td>Active</td>
+    </tr>
+
+    <tr>
+        <td>Result Management</td>
+        <td>Active</td>
+    </tr>
+
+    <tr>
+        <td>Notification System</td>
+        <td>Active</td>
+    </tr>
+
+</table>
+<br><br>
+
+
+<h2>Recent Activity</h2>
+<br>
+
+<table>
+
+    <tr>
+        <th>Date</th>
+        <th>Activity</th>
+    </tr>
+
+    <tr>
+        <td>{{ current_date }}</td>
+        <td>System Running Successfully</td>
+    </tr>
+
+</table>
+
+{% endblock %}

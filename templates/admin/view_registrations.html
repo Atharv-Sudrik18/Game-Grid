@@ -1,0 +1,43 @@
+{% extends "admin/admin_base.html" %}
+
+{% block content %}
+
+<h2>Registered Teams</h2>
+<br>
+
+<form method="GET" action="{{ url_for('admin.view_registrations') }}">
+    <input type="text" name="search" placeholder="Search by Team, Captain, or Username" value="{{ search or '' }}">
+    <button type="submit">Search</button>
+</form>
+
+<br>
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Tournament</th>
+        <th>Team Name</th>
+        <th>Captain Name</th>
+        <th>Captain Mobile</th>
+        <th>Players</th>
+        <th>Registered On</th>
+        <th>Action</th>
+    </tr>
+
+    {% for r in registrations %}
+    <tr>
+        <td>{{ r.id }}</td>
+        <td>{{ r.tournament_name }}</td>
+        <td>{{ r.team_name }}</td>
+        <td>{{ r.captain_name }}</td>
+        <td>{{ r.captain_mobile }}</td>
+        <td>{{ r.player_names }}</td>
+        <td>{{ r.registered_on }}</td>
+        <td>
+            <a class="action-btn delete" href="{{ url_for('admin.delete_registration', reg_id=r.id) }}" onclick="return confirm('Delete this registration?');">Delete</a>
+        </td>
+    </tr>
+    {% endfor %}
+
+</table>
+
+{% endblock %}

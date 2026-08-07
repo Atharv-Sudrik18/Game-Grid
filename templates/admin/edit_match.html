@@ -1,0 +1,42 @@
+{% extends "admin/admin_base.html" %}
+
+{% block content %}
+
+<h2>Edit Match No {{ match.match_no }}</h2>
+<br>
+
+<form method="POST" action="{{ url_for('admin.edit_match', match_id=match.id) }}">
+
+    <label>Match No</label>
+    <input type="number" name="match_no" value="{{ match.match_no }}" required>
+
+    <label>Team A</label>
+    <input type="text" name="team_a" value="{{ match.team_a or '' }}">
+
+    <label>Team B</label>
+    <input type="text" name="team_b" value="{{ match.team_b or '' }}">
+
+    <label>Match Date</label>
+    <input type="date" name="match_date" value="{{ match.match_date }}">
+
+    <label>Match Time</label>
+    <input type="time" name="match_time" value="{{ match.match_time }}">
+
+    <label>Venue</label>
+    <input type="text" name="venue" value="{{ match.venue or '' }}">
+
+    <label>Round</label>
+    <input type="text" name="round" value="{{ match.round or '' }}">
+
+    <label>Status</label>
+    <select name="status">
+        <option value="upcoming" {% if match.status == 'upcoming' %}selected{% endif %}>Upcoming</option>
+        <option value="ongoing" {% if match.status == 'ongoing' %}selected{% endif %}>Ongoing</option>
+        <option value="completed" {% if match.status == 'completed' %}selected{% endif %}>Completed</option>
+    </select>
+
+    <button type="submit">Save Changes</button>
+
+</form>
+
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "admin/admin_base.html" %}
+
+{% block content %}
+<h2>Update Result — Match No {{ match.match_no }}</h2>
+<p>{{ match.team_a }} vs {{ match.team_b }}</p>
+<br>
+
+
+<form method="POST" action="{{ url_for('admin.update_result', match_id=match.id) }}">
+
+    <label for="winner">Winner</label>
+    <input type="text" id="winner" name="winner" value="{{ match.winner or '' }}">
+
+    <label for="score_team_a">Score — {{ match.team_a }}</label>
+    <input type="text" id="score_team_a" name="score_team_a" value="{{ match.score_team_a or '' }}">
+
+    <label for="score_team_b">Score — {{ match.team_b }}</label>
+    <input type="text" id="score_team_b" name="score_team_b" value="{{ match.score_team_b or '' }}">
+
+    <label for="player_of_match">Player of the Match</label>
+    <input type="text" id="player_of_match" name="player_of_match" value="{{ match.player_of_match or '' }}">
+
+    <label for="remarks">Remarks</label>
+    <textarea id="remarks" name="remarks">{{ match.remarks or '' }}</textarea>
+
+    <button type="submit">Update Result</button>
+
+</form>
+
+{% endblock %}

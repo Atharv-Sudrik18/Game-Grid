@@ -1,0 +1,85 @@
+{% extends "admin/admin_base.html" %}
+
+{% block content %}
+<h2>Add Matches — {{ tournament.tournament_name }}</h2>
+<br>
+
+
+<form method="POST" action="{{ url_for('admin.add_matches', tournament_id=tournament_id) }}">
+
+    <label for="match_no">Match No</label>
+    <input type="number" id="match_no" name="match_no" required>
+
+    <label for="team_a">Team A</label>
+    <input type="text" id="team_a" name="team_a">
+
+    <label for="team_b">Team B</label>
+    <input type="text" id="team_b" name="team_b">
+
+    <label for="match_date">Match Date</label>
+    <input type="date" id="match_date" name="match_date">
+
+    <label for="match_time">Match Time</label>
+    <input type="time" id="match_time" name="match_time">
+
+    <label for="venue">Venue</label>
+    <input type="text" id="venue" name="venue">
+
+    <label for="round">Round</label>
+    <input type="text" id="round" name="round" placeholder="e.g. Quarterfinal, Final">
+
+    <label for="status">Status</label>
+    <select id="status" name="status">
+        <option value="upcoming">Upcoming</option>
+        <option value="ongoing">Ongoing</option>
+        <option value="completed">Completed</option>
+    </select>
+
+    <button type="submit">Add Match</button>
+
+</form>
+<br>
+
+
+<h3>Matches Added</h3>
+<br>
+
+<table>
+    <thead>
+        <tr>
+            <th>Match No</th>
+            <th>Team A</th>
+            <th>Team B</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Venue</th>
+            <th>Round</th>
+            <th>Status</th>
+            <th>Winner</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for match in matches %}
+        <tr>
+            <td>{{ match.match_no }}</td>
+            <td>{{ match.team_a }}</td>
+            <td>{{ match.team_b }}</td>
+            <td>{{ match.match_date }}</td>
+            <td>{{ match.match_time }}</td>
+            <td>{{ match.venue }}</td>
+            <td>{{ match.round }}</td>
+            <td>{{ match.status }}</td>
+            <td>{{ match.winner }}</td>
+            
+            <td>
+                <a class="action-btn view" href="{{ url_for('admin.update_result', match_id=match.id) }}">Update Result</a>
+                <a class="action-btn edit" href="{{ url_for('admin.edit_match', match_id=match.id) }}">Edit</a>
+                <a class="action-btn delete" href="{{ url_for('admin.delete_match', match_id=match.id) }}" onclick="return confirm('Delete this match?');">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends "admin/admin_base.html" %}
+
+{% block title %}
+Manage Users
+{% endblock %}
+
+{% block content %}
+
+<h2>Manage Users</h2>
+<br>
+
+<form method="GET" action="{{ url_for('admin.manage_users') }}">
+
+    <input type="text" name="search" placeholder="Search by Name, Username or Email" value="{{ search or '' }}">
+    <button type="submit">Search</button>
+
+</form>
+
+<br>
+
+<table>
+
+    <tr>
+        <th>Full Name</th>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Mobile</th>
+        <th>Action</th>
+    </tr>
+
+    {% for user in users %}
+
+    <tr>
+
+        <td>{{ user.fullname }}</td>
+        <td>{{ user.username }}</td>
+        <td>{{ user.email }}</td>
+        <td>{{ user.mobile }}</td>
+
+        <td>
+            <a class="action-btn edit" href="{{ url_for('admin.edit_user', username=user.username) }}">Edit</a>
+            <a class="action-btn delete" href="{{ url_for('admin.delete_user', username=user.username) }}" onclick="return confirm('Delete this user?');">Delete</a>
+        </td>
+
+    </tr>
+
+    {% endfor %}
+
+</table>
+
+{% endblock %}

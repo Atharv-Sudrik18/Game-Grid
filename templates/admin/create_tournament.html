@@ -1,0 +1,62 @@
+{% extends "admin/admin_base.html" %}
+
+{% block title %}
+Create Tournament
+{% endblock %}
+
+{% block content %}
+
+<h2>Create Tournament</h2>
+<br>
+
+<form action="{{ url_for('admin.create_tournament')}}" method="POST">
+
+    <label><b>Tournament Name</b></label>
+    <input type="text" name="tournament_name" id="tournament_name" placeholder="Enter Tournament Name" required>
+
+    <label><b>Game</b></label>
+    <input type="text" name="game" id="game" placeholder="Enter Game Name" required>
+
+    <label><b>Tournament Type</b></label>
+    <select name="tournament_type" id="tournament_type" required>
+        <option value="">-- Select Tournament Type --</option>
+        <option value="Knockout">Knockout</option>
+        <option value="League">League</option>
+        <option value="Round Robin">Round Robin</option>
+    </select>
+
+    <label><b>Start Date</b></label>
+    <input type="date" name="start_date" id="start_date" required>
+
+    <label><b>End Date</b></label>
+    <input type="date" name="end_date" id="end_date" required>
+
+    <label><b>Venue</b></label>
+    <input type="text" name="venue" id="venue" placeholder="Enter Venue" required>
+
+    <label><b>Maximum Teams</b></label>
+    <input type="number" name="maximum_teams" id="maximum_teams" min="2" required>
+
+    <label><b>Registration Last Date</b></label>
+    <input type="date" name="reg_last_date" id="reg_last_date" required>
+
+    <label><b>Status</b></label>
+    <select name="status" id="status">
+        <option value="Upcoming">Upcoming</option>
+        <option value="Ongoing">Ongoing</option>
+        <option value="Completed">Completed</option>
+    </select>
+
+    <br><br>
+
+    <button type="submit">
+        Create Tournament
+    </button>
+
+    <button type="reset">
+        Reset
+    </button>
+
+</form>
+
+{% endblock %}
