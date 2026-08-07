@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>Base Panel</title>
+</head>
+<body>  
+    
+<header>
+
+    <div class="logo">
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo">
+        <h1>Game Grid</h1>
+    </div>
+
+    <nav>
+        <div class="nav-links">
+
+            <a href="{{ url_for('main.index') }}">Home</a>
+            <a href="{{ url_for('main.about') }}">About</a>
+            <a href="{{ url_for('main.tournaments') }}">Tournaments</a>
+            <a href="{{ url_for('main.contact') }}">Contact</a>
+        </div>
+
+        <div class="nav-buttons">
+
+            <a class="btn-outline" href="{{ url_for('main.login') }}">Login</a>
+            <a class="btn-solid" href="{{ url_for('main.user_signup') }}">Register</a>
+
+        </div>
+
+    </nav>
+
+</header>
+
+
+<div class="container">
+{% block content %}
+
+{% endblock %}
+</div>
+
+
+<footer>
+    <p>© 2026 Game Grid. All rights reserved.</p>
+</footer>
+
+</body>
+</html>

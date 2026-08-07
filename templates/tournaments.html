@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}
+Tournament Management
+{% endblock %}
+
+{% block content %}
+
+<h2>Tournament Management</h2>
+<p>
+    View ongoing, upcoming, and completed sports tournaments managed through Game Grid.
+</p>
+<br>
+
+<h2>Upcoming Tournaments</h2>
+<table border="1">
+    <tr>
+        <th>Tournament Name</th>
+        <th>Sport</th>
+        <th>Start Date</th>
+        <th>Status</th>
+    </tr>
+
+    {% if upcoming_tournaments %}
+        {% for tournament in upcoming_tournaments %}
+        <tr>
+            <td>{{ tournament.tournament_name }}</td>
+            <td>{{ tournament.sport }}</td>
+            <td>{{ tournament.start_date }}</td>
+            <td>{{ tournament.status }}</td>
+        </tr>
+        {% endfor %}
+    {% else %}
+        <tr>
+            <td colspan="4">No upcoming tournaments available.</td>
+        </tr>
+    {% endif %}
+</table>
+<br>
+
+<h2>Completed Tournaments</h2>
+<table border="1">
+    <tr>
+        <th>Tournament Name</th>
+        <th>Sport</th>
+        <th>Winner</th>
+        <th>Year</th>
+    </tr>
+
+    {% if completed_tournaments %}
+        {% for tournament in completed_tournaments %}
+        <tr>
+            <td>{{ tournament.tournament_name }}</td>
+            <td>{{ tournament.sport }}</td>
+            <td>{{ tournament.winner }}</td>
+            <td>{{ tournament.year }}</td>
+        </tr>
+        {% endfor %}
+    {% else %}
+        <tr>
+            <td colspan="4">No completed tournaments available.</td>
+        </tr>
+    {% endif %}
+</table>
+
+{% endblock %}

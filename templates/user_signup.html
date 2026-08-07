@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Signup
+{% endblock %}
+
+{% block content %}
+    <h2>Create a New Account</h2>
+
+    <p>
+        Register yourself to participate in sports tournaments
+        and manage your tournament activities.
+    </p>
+
+    <hr>
+
+    <form action="/user_signup" method="POST">
+
+        <label for="fullname">Full Name:</label><br>
+        <input type="text" id="fullname" name="fullname" required>
+
+        <br><br>
+
+        <label for="username">Username:</label><br>
+        <input type="text" id="username" name="username" required>
+
+        <br><br>
+
+        <label for="email">Email Address:</label><br>
+        <input type="email" id="email" name="email" required>
+
+        <br><br>
+
+        <label for="mobile">Mobile Number:</label><br>
+        <input type="tel" id="mobile" name="mobile" maxlength="10" required>
+
+        <br><br>
+
+        <label for="password">Password:</label><br>
+        <input type="password" id="password" name="password" maxlength="10" required>
+
+        <br><br>
+
+        <label for="confirm_password">Confirm Password:</label><br>
+        <input type="password" id="confirm_password" name="confirm_password" maxlength="10" required>
+
+        <br><br>
+
+        <input type="submit" value="Create Account">
+
+        <input type="reset" value="Clear">
+
+    </form>
+
+    <br>
+
+    <p>
+        Already have an account?
+        <a href="/login">Login Here</a>
+    </p>
+{% endblock %}
