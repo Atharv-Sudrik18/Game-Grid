@@ -137,7 +137,6 @@ def user_view_matches(tournament_id):
 
     return render_template("user/user_matches.html", tournament=tournament, matches=matches)
 
-
 # User Registration route
 @user_bp.route("/registration", methods=["GET", "POST"])
 def user_registration():
@@ -153,7 +152,47 @@ def user_registration():
         captain_name = request.form["captain_name"]
         captain_mobile = request.form["captain_mobile"]
         player_names = request.form.getlist("player_names[]")
-        player_names_str = ", ".join([p for p in player_names if p.strip()])
+        player_names = [p for p in player_names if p.strip()]
+
+        error = None
+
+        if len(player_names) > 15:
+            error = "You can add a maximum of 15 players."
+
+        if not error:
+            cursor.execute("SELECT * FROM admin_create_tournaments WHERE id = %s", (tournament_id,))
+            tournament = cursor.fetchone()
+
+            if not tournament:
+                error = "Selected tournament could not be found."
+            elif tournament["reg_last_date"] and tournament["reg_last_date"] < date.today():
+                error = "Registration for this tournament has closed."
+            else:
+                cursor.execute(
+                    "SELECT COUNT(*) AS c FROM registrations WHERE tournament_id = %s",
+                    (tournament_id,)
+                )
+                current_count = cursor.fetchone()["c"]
+
+                if tournament["maximum_teams"] and current_count >= tournament["maximum_teams"]:
+                    error = "This tournament has reached its maximum number of teams."
+                else:
+                    cursor.execute(
+                        "SELECT id FROM registrations WHERE tournament_id = %s AND username = %s",
+                        (tournament_id, session.get("username"))
+                    )
+                    if cursor.fetchone():
+                        error = "You have already registered for this tournament."
+
+        if error:
+            cursor.execute("SELECT * FROM admin_create_tournaments ORDER BY start_date")
+            tournaments = cursor.fetchall()
+            cursor.close()
+            conn.close()
+            return render_template("user/user_registration.html", tournaments=tournaments,
+                                    error=error)
+
+        player_names_str = ", ".join(player_names)
 
         sql = """
         INSERT INTO registrations
@@ -171,6 +210,7 @@ def user_registration():
         conn.commit()
         cursor.close()
         conn.close()
+        flash("Registration successful.", "success")
         return redirect(url_for("user.user_dashboard"))
 
     cursor.execute("SELECT * FROM admin_create_tournaments ORDER BY start_date")
@@ -209,7 +249,16 @@ def edit_registration(reg_id):
         captain_name = request.form["captain_name"]
         captain_mobile = request.form["captain_mobile"]
         player_names = request.form.getlist("player_names[]")
-        player_names_str = ", ".join([p for p in player_names if p.strip()])
+        player_names = [p for p in player_names if p.strip()]
+
+        if len(player_names) > 15:
+            cursor.close()
+            conn.close()
+            player_list = [p.strip() for p in registration["player_names"].split(",") if p.strip()]
+            return render_template("user/edit_registration.html", registration=registration,
+                                    player_list=player_list, error="You can add a maximum of 15 players.")
+
+        player_names_str = ", ".join(player_names)
 
         cursor.execute("""
             UPDATE registrations SET
@@ -220,6 +269,7 @@ def edit_registration(reg_id):
 
         cursor.close()
         conn.close()
+        flash("Registration updated successfully.", "success")
         return redirect(url_for("user.user_dashboard"))
 
     cursor.close()
@@ -252,6 +302,7 @@ def delete_registration(reg_id):
 
     cursor.close()
     conn.close()
+    flash("Registration cancelled.", "delete")
     return redirect(url_for("user.user_dashboard"))
 
 
@@ -283,13 +334,17 @@ def user_notifications():
 
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM admin_published_notifications")
+    cursor.execute("""
+        SELECT * FROM admin_published_notifications
+        WHERE publish_date <= CURDATE()
+        ORDER BY publish_date DESC, id DESC
+    """)
     notifications = cursor.fetchall()
-    
+
     cursor.close()
     conn.close()
-    
-    return render_template("user/user_notifications.html",notifications=notifications)
+
+    return render_template("user/user_notifications.html", notifications=notifications)
 
 
 # User Logout Confirmation route
