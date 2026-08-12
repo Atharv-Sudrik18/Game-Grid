@@ -25,7 +25,7 @@ Tournament Management
         {% for tournament in upcoming_tournaments %}
         <tr>
             <td>{{ tournament.tournament_name }}</td>
-            <td>{{ tournament.sport }}</td>
+            <td>{{ tournament.game }}</td>
             <td>{{ tournament.start_date }}</td>
             <td>{{ tournament.status }}</td>
         </tr>
@@ -39,6 +39,7 @@ Tournament Management
 <br>
 
 <h2>Completed Tournaments</h2>
+
 <table border="1">
     <tr>
         <th>Tournament Name</th>
@@ -51,7 +52,7 @@ Tournament Management
         {% for tournament in completed_tournaments %}
         <tr>
             <td>{{ tournament.tournament_name }}</td>
-            <td>{{ tournament.sport }}</td>
+            <td>{{ tournament.game }}</td>
             <td>{{ tournament.winner }}</td>
             <td>{{ tournament.year }}</td>
         </tr>
