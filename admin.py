@@ -1,6 +1,6 @@
 from functools import wraps
 from datetime import date
-from flask import Blueprint, render_template, request, redirect, url_for, session  # type: ignore
+from flask import Blueprint, render_template, request, redirect, url_for, session, flash  # type: ignore
 from db import get_db_connection
 
 
@@ -15,6 +15,44 @@ def admin_login_required(f):
             return redirect(url_for("admin.admin_login"))
         return f(*args, **kwargs)
     return wrapper
+
+
+# Shared server-side validation for tournament date/team fields.
+# Mirrors the client-side checks so a bypassed/edited form can't save bad data.
+def validate_tournament_dates(start_date, end_date, reg_last_date, maximum_teams, allow_past_start=False):
+    today = date.today().isoformat()
+
+    try:
+        if int(maximum_teams) < 2:
+            return "Maximum Teams cannot be less than 2."
+    except (TypeError, ValueError):
+        return "Maximum Teams must be a valid number."
+
+    if not allow_past_start and start_date < today:
+        return "Start Date must be today or a future date."
+
+    if end_date <= start_date:
+        return "End Date must be after the Start Date."
+
+    if reg_last_date < today:
+        return "Registration Last Date must be today or a future date."
+
+    if reg_last_date > start_date:
+        return "Registration Last Date cannot be after the Start Date."
+
+    return None
+
+
+def validate_future_or_today(value, field_label):
+    if value < date.today().isoformat():
+        return f"{field_label} must be today or a future date."
+    return None
+
+
+def validate_today_or_past(value, field_label):
+    if value > date.today().isoformat():
+        return f"{field_label} cannot be a future date."
+    return None
 
 
 # Admin All Routes
@@ -77,12 +115,14 @@ def admin_profile():
         email = request.form["email"]
         mobile = request.form["mobile"]
         new_password = request.form.get("new_password", "")
+        confirm_password = request.form.get("confirm_password", "")
 
         # Check password confirmation
         if new_password and new_password != confirm_password:
             cursor.close()
             conn.close()
-            return "Passwords do not match"
+            flash("Passwords do not match.", "error")
+            return redirect(url_for("admin.admin_profile"))
 
         # Get existing admin profile
         cursor.execute("SELECT * FROM admin_profile LIMIT 1")
@@ -137,6 +177,7 @@ def admin_profile():
         cursor.close()
         conn.close()
 
+        flash("Profile updated successfully.", "success")
         return redirect(url_for("admin.admin_profile"))
 
     # GET request
@@ -207,6 +248,7 @@ def edit_user(username):
 
         cursor.close()
         conn.close()
+        flash(f"User '{username}' updated successfully.", "success")
         return redirect(url_for("admin.manage_users"))
 
     cursor.execute("SELECT fullname, username, email, mobile FROM sign_up WHERE username = %s", (username,))
@@ -234,6 +276,7 @@ def delete_user(username):
     cursor.close()
     conn.close()
 
+    flash(f"User '{username}' deleted.", "delete")
     return redirect(url_for("admin.manage_users"))
 
 
@@ -283,6 +326,7 @@ def delete_registration(reg_id):
     cursor.close()
     conn.close()
 
+    flash("Registration deleted.", "delete")
     return redirect(url_for('admin.view_registrations'))
 
 
@@ -317,6 +361,10 @@ def create_tournament():
         reg_last_date = request.form['reg_last_date']
         status = request.form['status']
 
+        error = validate_tournament_dates(start_date, end_date, reg_last_date, maximum_teams)
+        if error:
+            return render_template("admin/create_tournament.html", error=error, form=request.form)
+
         conn = get_db_connection()
         cursor = conn.cursor()
 
@@ -348,6 +396,7 @@ def create_tournament():
         cursor.close()
         conn.close()
 
+        flash(f"Tournament '{tournament_name}' created successfully.", "success")
         return redirect(url_for('admin.add_matches', tournament_id=tournament_id))
 
     return render_template("admin/create_tournament.html")
@@ -371,6 +420,20 @@ def edit_tournament(id):
         last_date = request.form["last_date"]
         status = request.form["status"]
 
+        error = validate_tournament_dates(
+            start_date, end_date, last_date, max_teams,
+            allow_past_start=(status != "Upcoming")
+        )
+        if error:
+            tournament = {
+                "id": id, "name": name, "game": game, "type": type_,
+                "start_date": start_date, "end_date": end_date, "venue": venue,
+                "max_teams": max_teams, "last_date": last_date, "status": status
+            }
+            cursor.close()
+            conn.close()
+            return render_template("admin/edit_tournament.html", tournament=tournament, error=error)
+
         cursor.execute("""
             UPDATE admin_create_tournaments SET
             tournament_name = %s, game = %s, tournament_type = %s,
@@ -382,6 +445,7 @@ def edit_tournament(id):
 
         cursor.close()
         conn.close()
+        flash(f"Tournament '{name}' updated successfully.", "success")
         return redirect(url_for('admin.manage_tournaments'))
 
     cursor.execute("""
@@ -417,6 +481,7 @@ def delete_tournament(id):
     cursor.close()
     conn.close()
 
+    flash("Tournament deleted.", "delete")
     return redirect(url_for('admin.manage_tournaments'))
 
 
@@ -437,6 +502,17 @@ def add_matches(tournament_id):
         round_ = request.form["round"]
         status = request.form["status"]
 
+        error = validate_future_or_today(match_date, "Match Date") if match_date else None
+        if error:
+            cursor.execute("SELECT * FROM admin_create_tournaments WHERE id = %s", (tournament_id,))
+            tournament = cursor.fetchone()
+            cursor.execute("SELECT * FROM matches WHERE tournament_id = %s ORDER BY match_no", (tournament_id,))
+            matches = cursor.fetchall()
+            cursor.close()
+            conn.close()
+            return render_template("admin/add_matches.html", tournament=tournament, matches=matches,
+                                    tournament_id=tournament_id, error=error)
+
         sql = """
         INSERT INTO matches
         (tournament_id, match_no, team_a, team_b, match_date, match_time, venue, round, status)
@@ -446,6 +522,7 @@ def add_matches(tournament_id):
 
         cursor.execute(sql, values)
         conn.commit()
+        flash(f"Match {match_no} added successfully.", "success")
 
     cursor.execute("SELECT * FROM admin_create_tournaments WHERE id = %s", (tournament_id,))
     tournament = cursor.fetchone()
@@ -476,6 +553,19 @@ def edit_match(match_id):
         round_ = request.form["round"]
         status = request.form["status"]
 
+        error = None
+        if match_date and status != "completed":
+            error = validate_future_or_today(match_date, "Match Date")
+        if error:
+            match = {
+                "id": match_id, "match_no": match_no, "team_a": team_a, "team_b": team_b,
+                "match_date": match_date, "match_time": match_time, "venue": venue,
+                "round": round_, "status": status
+            }
+            cursor.close()
+            conn.close()
+            return render_template("admin/edit_match.html", match=match, error=error)
+
         sql = """
         UPDATE matches SET
         match_no = %s, team_a = %s, team_b = %s, match_date = %s,
@@ -490,6 +580,7 @@ def edit_match(match_id):
         cursor.close()
         conn.close()
 
+        flash(f"Match {match_no} updated successfully.", "success")
         return redirect(url_for('admin.add_matches', tournament_id=row['tournament_id']))
 
     cursor.execute("SELECT * FROM matches WHERE id = %s", (match_id,))
@@ -517,6 +608,7 @@ def delete_match(match_id):
     cursor.close()
     conn.close()
 
+    flash("Match deleted.", "delete")
     return redirect(url_for('admin.add_matches', tournament_id=row['tournament_id']))
 
 
@@ -542,6 +634,7 @@ def update_result(match_id):
         """
         cursor.execute(sql, (winner, score_team_a, score_team_b, player_of_match, remarks, match_id))
         conn.commit()
+        flash("Match result updated successfully.", "success")
 
     cursor.execute("SELECT * FROM matches WHERE id = %s", (match_id,))
     match = cursor.fetchone()
@@ -559,6 +652,8 @@ def manage_results():
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
 
+    error = None
+
     if request.method == "POST":
         tournament_id = request.form["tournament_id"]
         winner = request.form["winner"]
@@ -566,15 +661,19 @@ def manage_results():
         score = request.form["score"]
         result_date = request.form["result_date"]
 
-        cursor.execute("SELECT tournament_name FROM admin_create_tournaments WHERE id = %s", (tournament_id,))
-        row = cursor.fetchone()
-        tournament_name = row["tournament_name"] if row else ""
+        error = validate_today_or_past(result_date, "Result Date") if result_date else None
 
-        cursor.execute("""
-            INSERT INTO admin_published_results (tournament, winner, runnerup, score, date)
-            VALUES (%s, %s, %s, %s, %s)
-        """, (tournament_name, winner, runner_up, score, result_date))
-        conn.commit()
+        if not error:
+            cursor.execute("SELECT tournament_name FROM admin_create_tournaments WHERE id = %s", (tournament_id,))
+            row = cursor.fetchone()
+            tournament_name = row["tournament_name"] if row else ""
+
+            cursor.execute("""
+                INSERT INTO admin_published_results (tournament, winner, runnerup, score, date)
+                VALUES (%s, %s, %s, %s, %s)
+            """, (tournament_name, winner, runner_up, score, result_date))
+            conn.commit()
+            flash("Result saved successfully.", "success")
 
     cursor.execute("SELECT id, tournament_name AS name FROM admin_create_tournaments ORDER BY id DESC")
     tournaments = cursor.fetchall()
@@ -589,7 +688,7 @@ def manage_results():
     cursor.close()
     conn.close()
 
-    return render_template("admin/manage_results.html", tournaments=tournaments, results=results)
+    return render_template("admin/manage_results.html", tournaments=tournaments, results=results, error=error)
 
 
 # Admin Notifications route
@@ -600,19 +699,25 @@ def manage_notifications():
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
 
+    error = None
+
     if request.method == "POST":
 
         title = request.form["title"]
         message = request.form["message"]
         publish_date = request.form["publish_date"]
 
-        sql = """
-        INSERT INTO admin_published_notifications(title, publish_date, message)
-        VALUES(%s, %s, %s)
-        """
+        error = validate_future_or_today(publish_date, "Publish Date") if publish_date else None
 
-        cursor.execute(sql, (title, publish_date, message))
-        conn.commit()
+        if not error:
+            sql = """
+            INSERT INTO admin_published_notifications(title, publish_date, message)
+            VALUES(%s, %s, %s)
+            """
+
+            cursor.execute(sql, (title, publish_date, message))
+            conn.commit()
+            flash("Notification published successfully.", "success")
 
     # Always fetch notifications
     cursor.execute("""
@@ -625,7 +730,71 @@ def manage_notifications():
     cursor.close()
     conn.close()
 
-    return render_template("admin/manage_notifications.html", notifications=notifications)
+    return render_template("admin/manage_notifications.html", notifications=notifications, error=error, now=date.today())
+
+# Admin Edit Notification route
+@admin_bp.route("/edit_notification/<int:id>", methods=["GET", "POST"])
+@admin_login_required
+def edit_notification(id):
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute("SELECT * FROM admin_published_notifications WHERE id = %s", (id,))
+    notification = cursor.fetchone()
+
+    if not notification:
+        cursor.close()
+        conn.close()
+        return "Notification not found", 404
+
+    if request.method == "POST":
+        title = request.form["title"]
+        message = request.form["message"]
+        publish_date = request.form["publish_date"]
+
+        # If the notification is already live (original date has passed),
+        # don't force the date forward — only newly-scheduled dates must be today/future.
+        already_live = notification["publish_date"] <= date.today()
+        error = None if already_live else validate_future_or_today(publish_date, "Publish Date")
+
+        if error:
+            edited = {"id": id, "title": title, "message": message, "publish_date": publish_date}
+            cursor.close()
+            conn.close()
+            return render_template("admin/edit_notification.html", notification=edited, error=error)
+
+        cursor.execute("""
+            UPDATE admin_published_notifications
+            SET title = %s, message = %s, publish_date = %s
+            WHERE id = %s
+        """, (title, message, publish_date, id))
+        conn.commit()
+
+        cursor.close()
+        conn.close()
+        flash("Notification updated successfully.", "success")
+        return redirect(url_for("admin.manage_notifications"))
+
+    cursor.close()
+    conn.close()
+    return render_template("admin/edit_notification.html", notification=notification)
+
+
+# Admin Delete Notification route
+@admin_bp.route("/delete_notification/<int:id>")
+@admin_login_required
+def delete_notification(id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("DELETE FROM admin_published_notifications WHERE id = %s", (id,))
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    flash("Notification deleted.", "delete")
+    return redirect(url_for("admin.manage_notifications"))
 
 
 # Admin Reports route
