@@ -18,18 +18,19 @@ Edit Registration
     <input type="text" name="captain_name" value="{{ registration.captain_name }}" required>
 
     <label>Captain Mobile No</label>
-    <input type="tel" name="captain_mobile" value="{{ registration.captain_mobile }}" pattern="[0-9]{10}" maxlength="10" required>
+    <input type="tel" name="captain_mobile" value="{{ registration.captain_mobile }}" pattern="[0-9]{10}" maxlength="10"
+        required>
 
     <label>Players</label>
     <div id="players_container" data-player-count="{{ player_list|length }}">
         {% for player in player_list %}
         <div class="player-row">
-            <input type="text" name="player_names[]" value="{{ player }}" placeholder="Player {{ loop.index }} name" required>
+            <input type="text" name="player_names[]" value="{{ player }}" placeholder="Player {{ loop.index }} name"
+                required>
         </div>
         {% endfor %}
     </div>
-    <button type="button" onclick="addPlayerField()">+ Add Player</button>
-
+    <button type="button" id="add_player_btn" onclick="addPlayerField()">+ Add Player</button>
     <br><br>
     <button type="submit">Save Changes</button>
     <a href="{{ url_for('user.user_dashboard') }}"><button type="button">Cancel</button></a>
@@ -37,23 +38,33 @@ Edit Registration
 </form>
 
 <script>
-const container = document.getElementById("players_container");
-let playerCount = Number(container.dataset.playerCount || 0);
+    const MAX_PLAYERS = 15;
+    let playerCount = 1;
 
-function addPlayerField() {
-    playerCount++;
+    function addPlayerField() {
+        if (playerCount >= MAX_PLAYERS) {
+            alert("You can add a maximum of " + MAX_PLAYERS + " players.");
+            return;
+        }
 
-    const row = document.createElement("div");
-    row.className = "player-row";
+        playerCount++;
+        const container = document.getElementById("players_container");
 
-    const input = document.createElement("input");
-    input.type = "text";
-    input.name = "player_names[]";
-    input.placeholder = "Player " + playerCount + " name";
+        const row = document.createElement("div");
+        row.className = "player-row";
 
-    row.appendChild(input);
-    container.appendChild(row);
-}
+        const input = document.createElement("input");
+        input.type = "text";
+        input.name = "player_names[]";
+        input.placeholder = "Player " + playerCount + " name";
+
+        row.appendChild(input);
+        container.appendChild(row);
+
+        if (playerCount >= MAX_PLAYERS) {
+            document.getElementById("add_player_btn").disabled = true;
+        }
+    }
 </script>
 
 {% endblock %}

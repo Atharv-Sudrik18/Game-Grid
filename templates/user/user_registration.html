@@ -35,31 +35,40 @@ Tournament Registration
             <input type="text" name="player_names[]" placeholder="Player 1 name" required>
         </div>
     </div>
-    <button type="button" onclick="addPlayerField()">+ Add Player</button>
-
+    <button type="button" id="add_player_btn" onclick="addPlayerField()">+ Add Player</button>
     <br><br>
     <button type="submit">Register</button>
 
 </form>
 
 <script>
-let playerCount = 1;
+    const MAX_PLAYERS = 15;
+    let playerCount = 1;
 
-function addPlayerField() {
-    playerCount++;
-    const container = document.getElementById("players_container");
+    function addPlayerField() {
+        if (playerCount >= MAX_PLAYERS) {
+            alert("You can add a maximum of " + MAX_PLAYERS + " players.");
+            return;
+        }
 
-    const row = document.createElement("div");
-    row.className = "player-row";
+        playerCount++;
+        const container = document.getElementById("players_container");
 
-    const input = document.createElement("input");
-    input.type = "text";
-    input.name = "player_names[]";
-    input.placeholder = "Player " + playerCount + " name";
+        const row = document.createElement("div");
+        row.className = "player-row";
 
-    row.appendChild(input);
-    container.appendChild(row);
-}
+        const input = document.createElement("input");
+        input.type = "text";
+        input.name = "player_names[]";
+        input.placeholder = "Player " + playerCount + " name";
+
+        row.appendChild(input);
+        container.appendChild(row);
+
+        if (playerCount >= MAX_PLAYERS) {
+            document.getElementById("add_player_btn").disabled = true;
+        }
+    }
 </script>
 
 {% endblock %}
