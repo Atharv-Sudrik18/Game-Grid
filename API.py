@@ -6,9 +6,12 @@ from google import genai
 app = Flask(__name__)
 
 # Gemini API client
-client = genai.Client(
-    api_key=os.environ.get("GEMINI_API_KEY")
-)
+api_key = os.environ.get("GEMINI_API_KEY")
+
+if not api_key:
+    raise RuntimeError("GEMINI_API_KEY environment variable is not set.")
+
+client = genai.Client(api_key=api_key)
 
 
 @app.route("/")
@@ -19,12 +22,18 @@ def home():
 @app.route("/chat", methods=["POST"])
 def chat():
     data = request.get_json()
+
+    if not data:
+        return jsonify({
+            "reply": "Invalid request."
+        }), 400
+
     message = data.get("message", "").strip()
 
     if not message:
         return jsonify({
             "reply": "Please enter a message."
-        })
+        }), 400
 
     try:
         response = client.models.generate_content(
