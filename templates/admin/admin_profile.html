@@ -47,7 +47,7 @@ Admin Profile
         <input type="email" name="email" value="{{ admin.email }}" required>
 
         <label>Mobile</label>
-        <input type="text" name="mobile" value="{{ admin.mobile }}" required>
+        <input type="tel" name="mobile" value="{{ admin.mobile }}" maxlength="10" required>
 
         <label>New Password</label>
         <input type="password" name="new_password" placeholder="Leave blank to keep current password">

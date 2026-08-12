@@ -9,6 +9,10 @@ Manage Notifications
 <h2>Manage Notifications</h2>
 <br>
 
+{% if error %}
+<p style="color:red;"><b>{{ error }}</b></p>
+{% endif %}
+
 <form action="{{ url_for('admin.manage_notifications') }}" method="POST">
 
     <label><b>Notification Title</b></label>
@@ -25,6 +29,24 @@ Manage Notifications
     <button type="reset"> Clear </button>
 
 </form>
+
+<script>
+    (function () {
+        var publishDate = document.getElementById('publish_date');
+        var d = new Date();
+        var offset = d.getTimezoneOffset();
+        d = new Date(d.getTime() - offset * 60 * 1000);
+        var today = d.toISOString().split('T')[0];
+        publishDate.min = today;
+
+        document.querySelector('form').addEventListener('submit', function (e) {
+            if (publishDate.value < today) {
+                alert('Publish Date must be today or a future date.');
+                e.preventDefault();
+            }
+        });
+    })();
+</script>
 <br><br>
 
 <h2>Published Notifications</h2>
@@ -36,6 +58,7 @@ Manage Notifications
         <th>Title</th>
         <th>Message</th>
         <th>Publish Date</th>
+        <th>Actions</th>
     </tr>
 
     {% for notification in notifications %}
@@ -45,7 +68,11 @@ Manage Notifications
         <td>{{ notification.title }}</td>
         <td>{{ notification.message }}</td>
         <td>{{ notification.publish_date }}</td>
-
+        <td>
+            <a class="action-btn edit" href="{{ url_for('admin.edit_notification', id=notification.id) }}">Edit</a>
+            <a class="action-btn delete" href="{{ url_for('admin.delete_notification', id=notification.id) }}" onclick="return confirm('Delete this notification?');">Delete</a>
+        </td>
+        
     </tr>
 
     {% endfor %}

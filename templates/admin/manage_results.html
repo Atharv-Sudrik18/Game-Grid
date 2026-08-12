@@ -9,6 +9,10 @@ Manage Results
 <h2>Manage Tournament Results</h2>
 <br>
 
+{% if error %}
+<p style="color:red;"><b>{{ error }}</b></p>
+{% endif %}
+
 <form action="{{ url_for('admin.manage_results') }}" method="POST">
 
     <label><b>Select Tournament</b></label>
@@ -25,27 +29,16 @@ Manage Results
     </select>
 
     <label><b>Winner Team</b></label>
-    <input type="text"
-           name="winner"
-           placeholder="Enter Winner Team Name"
-           required>
+    <input type="text" name="winner" placeholder="Enter Winner Team Name" required>
 
     <label><b>Runner-Up Team</b></label>
-    <input type="text"
-           name="runner_up"
-           placeholder="Enter Runner-Up Team Name"
-           required>
+    <input type="text" name="runner_up" placeholder="Enter Runner-Up Team Name" required>
 
     <label><b>Score</b></label>
-    <input type="text"
-           name="score"
-           placeholder="Example: 3 - 1"
-           required>
+    <input type="text" name="score" placeholder="Example: 3 - 1" required>
 
     <label><b>Result Date</b></label>
-    <input type="date"
-           name="result_date"
-           required>
+    <input type="date" name="result_date" id="result_date" required>
 
     <br><br>
 
@@ -54,6 +47,24 @@ Manage Results
     </button>
 
 </form>
+
+<script>
+    (function () {
+        var resultDate = document.getElementById('result_date');
+        var d = new Date();
+        var offset = d.getTimezoneOffset();
+        d = new Date(d.getTime() - offset * 60 * 1000);
+        var today = d.toISOString().split('T')[0];
+        resultDate.max = today;
+
+        document.querySelector('form').addEventListener('submit', function (e) {
+            if (resultDate.value > today) {
+                alert('Result Date cannot be a future date.');
+                e.preventDefault();
+            }
+        });
+    })();
+</script>
 <br><br>
 
 <h2>Published Results</h2>

@@ -1,0 +1,44 @@
+{% extends "admin/admin_base.html" %}
+
+{% block title %}
+Edit Notification
+{% endblock %}
+
+{% block content %}
+
+<h2>Edit Notification</h2>
+<br>
+
+{% if error %}
+<p style="color:red;"><b>{{ error }}</b></p>
+{% endif %}
+
+<form method="POST">
+
+    <label><b>Notification Title</b></label>
+    <input type="text" name="title" id="title" value="{{ notification.title }}" required>
+
+    <label><b>Notification Message</b></label>
+    <textarea name="message" id="message" rows="6" required>{{ notification.message }}</textarea>
+
+    <label><b>Publish Date</b></label>
+    <input type="date" name="publish_date" id="publish_date" value="{{ notification.publish_date }}" required>
+    <br><br>
+
+    <button type="submit">Save Changes</button>
+    <a href="{{ url_for('admin.manage_notifications') }}"><button type="button">Cancel</button></a>
+
+</form>
+
+<script>
+(function () {
+    var publishDate = document.getElementById('publish_date');
+    var d = new Date();
+    var offset = d.getTimezoneOffset();
+    d = new Date(d.getTime() - offset * 60 * 1000);
+    var today = d.toISOString().split('T')[0];
+    publishDate.min = today;
+})();
+</script>
+
+{% endblock %}

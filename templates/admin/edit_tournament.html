@@ -9,84 +9,64 @@ Edit Tournament
 <h2>Edit Tournament</h2>
 <br>
 
+{% if error %}
+<p style="color:red;"><b>{{ error }}</b></p>
+{% endif %}
+
 <form method="POST">
 
     <label><b>Tournament Name</b></label>
-    <input type="text"name="name"value="{{ tournament.name }}"required>
+    <input type="text" name="name" value="{{ tournament.name }}" required>
 
     <label><b>Game</b></label>
-    <input type="text"
-           name="game"
-           value="{{ tournament.game }}"
-           required>
+    <input type="text" name="game" value="{{ tournament.game }}" required>
 
     <label><b>Tournament Type</b></label>
-    <select name="type">
+    <select name="type" required>
 
-        <option value="Knockout"
-        {% if tournament.type == "Knockout" %}selected{% endif %}>
-        Knockout
+        <option value="Knockout" {% if tournament.type=="Knockout" %}selected{% endif %}>
+            Knockout
         </option>
 
-        <option value="League"
-        {% if tournament.type == "League" %}selected{% endif %}>
-        League
+        <option value="League" {% if tournament.type=="League" %}selected{% endif %}>
+            League
         </option>
 
-        <option value="Round Robin"
-        {% if tournament.type == "Round Robin" %}selected{% endif %}>
-        Round Robin
+        <option value="Round Robin" {% if tournament.type=="Round Robin" %}selected{% endif %}>
+            Round Robin
         </option>
 
     </select>
 
     <label><b>Start Date</b></label>
-    <input type="date"
-           name="start_date"
-           value="{{ tournament.start_date }}"
-           required>
+    <input type="date" id="start_date" name="start_date" value="{{ tournament.start_date }}" required>
 
     <label><b>End Date</b></label>
-    <input type="date"
-           name="end_date"
-           value="{{ tournament.end_date }}"
-           required>
+    <input type="date" id="end_date" name="end_date" value="{{ tournament.end_date }}" required>
 
     <label><b>Venue</b></label>
-    <input type="text"
-           name="venue"
-           value="{{ tournament.venue }}"
-           required>
+    <input type="text" name="venue" value="{{ tournament.venue }}" required>
 
     <label><b>Maximum Teams</b></label>
-    <input type="number"
-           name="max_teams"
-           value="{{ tournament.max_teams }}"
-           required>
+    <input type="number" id="max_teams" name="max_teams" value="{{ tournament.max_teams }}" min="2" required>
 
     <label><b>Registration Last Date</b></label>
-    <input type="date"
-           name="last_date"
-           value="{{ tournament.last_date }}"
-           required>
+    <input type="date" id="last_date" name="last_date" value="{{ tournament.last_date }}" required>
 
     <label><b>Status</b></label>
 
-    <select name="status">
+    <select id="status" name="status">
 
-        <option value="Upcoming"
-        {% if tournament.status == "Upcoming" %}selected{% endif %}>
-        Upcoming
+        <option value="Upcoming" {% if tournament.status=="Upcoming" %}selected{% endif %}>
+            Upcoming
         </option>
 
-        <option value="Ongoing"
-        {% if tournament.status == "Ongoing" %}selected{% endif %}>
-        Ongoing
+        <option value="Ongoing" {% if tournament.status=="Ongoing" %}selected{% endif %}>
+            Ongoing
         </option>
 
-        <option value="Completed"
-        {% if tournament.status == "Completed" %}selected{% endif %}>
-        Completed
+        <option value="Completed" {% if tournament.status=="Completed" %}selected{% endif %}>
+            Completed
         </option>
 
     </select>
@@ -101,5 +81,81 @@ Edit Tournament
     </button>
 
 </form>
+
+<script>
+    (function () {
+        var startDate = document.getElementById('start_date');
+        var endDate = document.getElementById('end_date');
+        var regLastDate = document.getElementById('last_date');
+        var maxTeams = document.getElementById('max_teams');
+        var status = document.getElementById('status');
+
+        function todayStr() {
+            var d = new Date();
+            var offset = d.getTimezoneOffset();
+            d = new Date(d.getTime() - offset * 60 * 1000);
+            return d.toISOString().split('T')[0];
+        }
+
+        function addDays(dateStr, days) {
+            var d = new Date(dateStr);
+            d.setDate(d.getDate() + days);
+            var offset = d.getTimezoneOffset();
+            d = new Date(d.getTime() - offset * 60 * 1000);
+            return d.toISOString().split('T')[0];
+        }
+
+        var today = todayStr();
+
+        // A tournament that is already Ongoing/Completed legitimately has a
+        // start date in the past, so only Upcoming tournaments require a
+        // today-or-future start date.
+        function syncMins() {
+            if (status.value === 'Upcoming') {
+                startDate.min = today;
+                regLastDate.min = today;
+            } else {
+                startDate.removeAttribute('min');
+                regLastDate.removeAttribute('min');
+            }
+            if (startDate.value) {
+                endDate.min = addDays(startDate.value, 1);
+                regLastDate.max = startDate.value;
+            }
+        }
+
+        status.addEventListener('change', syncMins);
+        startDate.addEventListener('change', syncMins);
+        syncMins();
+
+        document.querySelector('form').addEventListener('submit', function (e) {
+            if (status.value === 'Upcoming' && startDate.value < today) {
+                alert('Start Date must be today or a future date for an Upcoming tournament.');
+                e.preventDefault();
+                return;
+            }
+            if (endDate.value <= startDate.value) {
+                alert('End Date must be after the Start Date.');
+                e.preventDefault();
+                return;
+            }
+            if (status.value === 'Upcoming' && regLastDate.value < today) {
+                alert('Registration Last Date must be today or a future date for an Upcoming tournament.');
+                e.preventDefault();
+                return;
+            }
+            if (regLastDate.value > startDate.value) {
+                alert('Registration Last Date cannot be after the Start Date.');
+                e.preventDefault();
+                return;
+            }
+            if (parseInt(maxTeams.value, 10) < 2) {
+                alert('Maximum Teams cannot be less than 2.');
+                e.preventDefault();
+                return;
+            }
+        });
+    })();
+</script>
 
 {% endblock %}

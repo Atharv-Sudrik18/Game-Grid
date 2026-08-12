@@ -4,6 +4,10 @@
 <h2>Add Matches — {{ tournament.tournament_name }}</h2>
 <br>
 
+{% if error %}
+<p style="color:red;"><b>{{ error }}</b></p>
+{% endif %}
+
 
 <form method="POST" action="{{ url_for('admin.add_matches', tournament_id=tournament_id) }}">
 
@@ -11,22 +15,22 @@
     <input type="number" id="match_no" name="match_no" required>
 
     <label for="team_a">Team A</label>
-    <input type="text" id="team_a" name="team_a">
+    <input type="text" id="team_a" name="team_a" required>
 
     <label for="team_b">Team B</label>
-    <input type="text" id="team_b" name="team_b">
+    <input type="text" id="team_b" name="team_b" required>
 
     <label for="match_date">Match Date</label>
-    <input type="date" id="match_date" name="match_date">
+    <input type="date" id="match_date" name="match_date" required>
 
     <label for="match_time">Match Time</label>
-    <input type="time" id="match_time" name="match_time">
+    <input type="time" id="match_time" name="match_time" required>
 
     <label for="venue">Venue</label>
-    <input type="text" id="venue" name="venue">
+    <input type="text" id="venue" name="venue"  placeholder="e.g. Stadium Name, City" required>
 
     <label for="round">Round</label>
-    <input type="text" id="round" name="round" placeholder="e.g. Quarterfinal, Final">
+    <input type="text" id="round" name="round" placeholder="e.g. Quarterfinal, Final" required>
 
     <label for="status">Status</label>
     <select id="status" name="status">
@@ -38,6 +42,16 @@
     <button type="submit">Add Match</button>
 
 </form>
+
+<script>
+(function () {
+    var matchDate = document.getElementById('match_date');
+    var d = new Date();
+    var offset = d.getTimezoneOffset();
+    d = new Date(d.getTime() - offset * 60 * 1000);
+    matchDate.min = d.toISOString().split('T')[0];
+})();
+</script>
 <br>
 
 

@@ -5,31 +5,35 @@
 <h2>Edit Match No {{ match.match_no }}</h2>
 <br>
 
+{% if error %}
+<p style="color:red;"><b>{{ error }}</b></p>
+{% endif %}
+
 <form method="POST" action="{{ url_for('admin.edit_match', match_id=match.id) }}">
 
     <label>Match No</label>
     <input type="number" name="match_no" value="{{ match.match_no }}" required>
 
     <label>Team A</label>
-    <input type="text" name="team_a" value="{{ match.team_a or '' }}">
+    <input type="text" name="team_a" value="{{ match.team_a or '' }}" required>
 
     <label>Team B</label>
-    <input type="text" name="team_b" value="{{ match.team_b or '' }}">
+    <input type="text" name="team_b" value="{{ match.team_b or '' }}" required  >
 
     <label>Match Date</label>
-    <input type="date" name="match_date" value="{{ match.match_date }}">
+    <input type="date" id="match_date" name="match_date" value="{{ match.match_date }}" required>
 
     <label>Match Time</label>
-    <input type="time" name="match_time" value="{{ match.match_time }}">
+    <input type="time" name="match_time" value="{{ match.match_time }}" required>
 
     <label>Venue</label>
-    <input type="text" name="venue" value="{{ match.venue or '' }}">
+    <input type="text" name="venue" value="{{ match.venue or '' }}" required>
 
     <label>Round</label>
-    <input type="text" name="round" value="{{ match.round or '' }}">
+    <input type="text" name="round" value="{{ match.round or '' }}" required>
 
     <label>Status</label>
-    <select name="status">
+    <select id="status" name="status" required>
         <option value="upcoming" {% if match.status == 'upcoming' %}selected{% endif %}>Upcoming</option>
         <option value="ongoing" {% if match.status == 'ongoing' %}selected{% endif %}>Ongoing</option>
         <option value="completed" {% if match.status == 'completed' %}selected{% endif %}>Completed</option>
@@ -38,5 +42,31 @@
     <button type="submit">Save Changes</button>
 
 </form>
+
+<script>
+(function () {
+    var matchDate = document.getElementById('match_date');
+    var status = document.getElementById('status');
+    var d = new Date();
+    var offset = d.getTimezoneOffset();
+    d = new Date(d.getTime() - offset * 60 * 1000);
+    var today = d.toISOString().split('T')[0];
+
+    function syncMin() {
+        // Completed matches may keep a past date; upcoming/ongoing must be today or later.
+        matchDate.min = (status.value === 'completed') ? '' : today;
+    }
+
+    status.addEventListener('change', syncMin);
+    syncMin();
+
+    document.querySelector('form').addEventListener('submit', function (e) {
+        if (status.value !== 'completed' && matchDate.value < today) {
+            alert('Match Date must be today or a future date for upcoming/ongoing matches.');
+            e.preventDefault();
+        }
+    });
+})();
+</script>
 
 {% endblock %}
