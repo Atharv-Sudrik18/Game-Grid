@@ -50,16 +50,20 @@ def tournaments():
     cursor.execute("""
         SELECT tournament_name, game, start_date, status
         FROM admin_create_tournaments
-        WHERE status = 'Upcoming'
+        WHERE LOWER(status) = 'upcoming'
         ORDER BY start_date ASC
     """)
     upcoming_tournaments = cursor.fetchall()
 
     # Completed tournaments
     cursor.execute("""
-        SELECT tournament_name, game, winner, end_date
+        SELECT 
+            tournament_name,
+            game,
+            winner,
+            YEAR(end_date) AS year
         FROM admin_create_tournaments
-        WHERE status = 'Completed'
+        WHERE LOWER(status) = 'completed'
         ORDER BY end_date DESC
     """)
     completed_tournaments = cursor.fetchall()
