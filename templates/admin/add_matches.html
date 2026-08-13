@@ -12,7 +12,7 @@
 <form method="POST" action="{{ url_for('admin.add_matches', tournament_id=tournament_id) }}">
 
     <label for="match_no">Match No</label>
-    <input type="number" id="match_no" name="match_no" required>
+    <input type="number" id="match_no" name="match_no" min="1" max="100" required>
 
     <label for="team_a">Team A</label>
     <input type="text" id="team_a" name="team_a" required>
