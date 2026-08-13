@@ -48,46 +48,6 @@ header p {
     overflow:visible;
 }
 
-/*================ ALERT MESSAGES ================*/
-
-.alert-error {
-    background: #fee2e2;
-    color: #b91c1c;
-    border: 1px solid #fca5a5;
-    border-left: 5px solid #dc2626;
-    padding: 12px 18px;
-    border-radius: 10px;
-    margin: 15px auto 20px;
-    max-width: 600px;
-    font-weight: 600;
-    font-size: 15px;
-    text-align: center;
-    animation: shake 0.3s ease-in-out;
-}
-
-.alert-success {
-    background: #dcfce7;
-    color: #15803d;
-    border: 1px solid #86efac;
-    border-left: 5px solid #22c55e;
-    padding: 12px 18px;
-    border-radius: 10px;
-    margin: 15px auto 20px;
-    max-width: 600px;
-    font-weight: 600;
-    font-size: 15px;
-    text-align: center;
-    animation: shake 0.3s ease-in-out;
-}
-
-@keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    20% { transform: translateX(-6px); }
-    40% { transform: translateX(6px); }
-    60% { transform: translateX(-4px); }
-    80% { transform: translateX(4px); }
-}
-
 /* Logo */
 
 .logo{
@@ -572,34 +532,364 @@ footer p {
     margin: 0;
 }
 
-/* .flash-container { width: 92%; max-width: 1200px; margin: 18px auto 0; } */
+
+/*================ MOBILE ================*/
+
+@media(max-width:768px) {
+
+    /* ================= NAVBAR ================= */
+
+    .navbar {
+        min-height: auto;
+
+        display: flex;
+        flex-direction: column;
+
+        align-items: stretch;
+
+        padding: 14px 10px;
+
+        position: relative;
+
+        overflow: visible !important;
+    }
+
+
+    /* ================= LOGO ================= */
+
+    .logo {
+        width: 100%;
+
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+
+        padding-left: 10px;
+
+        flex-shrink: 0;
+    }
+
+    .logo img {
+        width: 45px;
+        height: auto;
+
+        margin-right: 10px;
+    }
+
+    .logo h1 {
+        font-size: 24px;
+
+        white-space: nowrap;
+    }
+
+
+    /* ================= NAVIGATION ================= */
+
+    .nav-links {
+
+        /* Keep all links in ONE row */
+        display: flex !important;
+
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+
+        align-items: center;
+
+        /* Make this the horizontal scrolling area */
+        width: 100%;
+        max-width: 100%;
+
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
+
+        -webkit-overflow-scrolling: touch;
+
+        /* Keep your original spacing */
+        gap: 28px;
+
+        padding: 8px 5px 8px;
+
+        box-sizing: border-box;
+
+        flex-shrink: 0;
+
+        /* Firefox */
+        scrollbar-width: auto;
+        scrollbar-color: #22c55e transparent;
+    }
+
+
+    /* ================= LARGE HORIZONTAL SCROLLBAR ================= */
+
+    .nav-links::-webkit-scrollbar {
+        height: 14px;
+    }
+
+    .nav-links::-webkit-scrollbar-track {
+        background: transparent;
+
+        border-radius: 10px;
+    }
+
+    .nav-links::-webkit-scrollbar-thumb {
+        background: #22c55e;
+
+        border-radius: 10px;
+    }
+
+    .nav-links::-webkit-scrollbar-thumb:hover {
+        background: #16a34a;
+    }
+
+
+    /* ================= NAVIGATION LINKS ================= */
+
+    .nav-links a {
+
+        display: inline-block;
+
+        white-space: nowrap;
+
+        text-align: center;
+
+        font-size: 15px;
+
+        /* Prevent links from shrinking */
+        flex: 0 0 auto;
+    }
+
+
+    /* ================= PROFILE AREA ================= */
+
+    .profile-dropdown {
+
+        width: 100%;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: flex-start;
+
+        margin-top: 0;
+
+        padding: 8px 5px 0;
+
+        position: relative;
+
+        z-index: 99999;
+
+        flex-shrink: 0;
+    }
+
+
+    .profile-img {
+
+        width: 48px;
+        height: 48px;
+
+        flex-shrink: 0;
+    }
+
+
+    /* =================================================
+       PROFILE POPUP
+       ================================================= */
+
+    .dropdown-content {
+
+        display: none;
+
+        position: absolute;
+
+        /*
+         * Open from the left side of the profile.
+         * This prevents it from going outside the phone.
+         */
+        left: 0;
+
+        right: auto;
+
+        top: 60px;
+
+        width: 190px;
+
+        /*
+         * Never allow popup to exceed screen width.
+         */
+        max-width: calc(100vw - 25px);
+
+        background: #fff;
+
+        border-radius: 12px;
+
+        box-shadow: 0 10px 25px rgba(0,0,0,.25);
+
+        overflow: hidden;
+
+        z-index: 100000;
+
+        box-sizing: border-box;
+    }
+
+
+    .dropdown-content.show {
+        display: block;
+    }
+
+
+    .dropdown-content a {
+
+        display: block;
+
+        width: 100%;
+
+        box-sizing: border-box;
+
+        padding: 14px 18px;
+
+        color: #222 !important;
+
+        text-decoration: none;
+
+        font-size: 16px;
+
+        font-weight: 600;
+
+        white-space: nowrap;
+
+        transition: .3s;
+    }
+
+
+    .dropdown-content a:hover {
+
+        background: #2563eb;
+
+        color: #fff !important;
+    }
+}
+
+
+/*=====================================================*
+* SMALL PHONES
+*=====================================================*/
+
+@media(max-width:420px) {
+
+    .navbar {
+        padding: 12px 7px;
+    }
+
+
+    /* ================= LOGO ================= */
+
+    .logo {
+        padding-left: 7px;
+    }
+
+    .logo img {
+        width: 40px;
+    }
+
+    .logo h1 {
+        font-size: 21px;
+    }
+
+
+    /* ================= NAVIGATION ================= */
+
+    .nav-links {
+
+        width: 100%;
+
+        display: flex !important;
+
+        flex-direction: row !important;
+
+        flex-wrap: nowrap !important;
+
+        overflow-x: auto !important;
+
+        overflow-y: hidden !important;
+
+        gap: 22px;
+
+        padding: 8px 5px 8px;
+
+        /* Firefox */
+        scrollbar-width: auto;
+
+        scrollbar-color: #22c55e transparent;
+    }
+
+
+    /* BIG SCROLLBAR */
+
+    .nav-links::-webkit-scrollbar {
+        height: 14px;
+    }
+
+    .nav-links::-webkit-scrollbar-track {
+        background: transparent;
+
+        border-radius: 10px;
+    }
+
+    .nav-links::-webkit-scrollbar-thumb {
+        background: #22c55e;
+
+        border-radius: 10px;
+    }
+
+
+    .nav-links a {
+
+        font-size: 14px;
+
+        white-space: nowrap;
+
+        flex: 0 0 auto;
+    }
+
+
+    /* ================= PROFILE ================= */
+
+    .profile-dropdown {
+
+        padding-left: 5px;
+
+        padding-top: 8px;
+    }
+
+
+    .profile-img {
+
+        width: 46px;
+        height: 46px;
+    }
+
+
+    /* ================= POPUP ================= */
+
+    .dropdown-content {
+
+        left: 0;
+
+        right: auto;
+
+        top: 58px;
+
+        width: 180px;
+
+        max-width: calc(100vw - 25px);
+    }
+}
+
+/* Flash response messages */
+.flash-container { width: 92%; max-width: 1200px; margin: 18px auto 0; }
 .flash-message { padding: 13px 18px; border-radius: 10px; margin-bottom: 10px; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,.10); }
 .flash-message.success { background: #dcfce7; color: #166534; border-left: 5px solid #22c55e; }
 .flash-message.error { background: #fee2e2; color: #991b1b; border-left: 5px solid #ef4444; }
 .flash-message.warning { background: #fef3c7; color: #92400e; border-left: 5px solid #f59e0b; }
 .flash-message.info { background: #dbeafe; color: #1e40af; border-left: 5px solid #2563eb; }
-
-/*================ MOBILE ================*/
-@media(max-width:768px) {
-
-    nav {
-        flex-direction: column;
-        gap: 20px;
-        padding: 20px;
-    }
-
-    .nav-links {
-        flex-direction: column;
-        width: 100%;
-
-    }
-
-    .nav-links a {
-        text-align: center;
-    }
-
-    .profile-menu {
-        margin-top: 10px;
-    }
-
-}
