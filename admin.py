@@ -200,7 +200,6 @@ def admin_profile():
 
     return render_template("admin/admin_profile.html", admin=admin)
 
-
 # Admin Manage Users route
 @admin_bp.route("/manage_users")
 @admin_login_required
@@ -214,11 +213,12 @@ def manage_users():
         cursor.execute("""
             SELECT fullname, username, email, mobile
             FROM sign_up
-            WHERE fullname LIKE %s OR username LIKE %s OR email LIKE %s
+            WHERE is_deleted = 0
+            AND (fullname LIKE %s OR username LIKE %s OR email LIKE %s)
             ORDER BY username
         """, (f"%{search}%", f"%{search}%", f"%{search}%"))
     else:
-        cursor.execute("SELECT fullname, username, email, mobile FROM sign_up ORDER BY username")
+        cursor.execute("SELECT fullname, username, email, mobile FROM sign_up WHERE is_deleted = 0 ORDER BY username")
 
     users = cursor.fetchall()
 
@@ -270,13 +270,13 @@ def delete_user(username):
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    cursor.execute("DELETE FROM sign_up WHERE username = %s", (username,))
+    cursor.execute("UPDATE sign_up SET is_deleted = 1, deleted_at = NOW() WHERE username = %s", (username,))
     conn.commit()
 
     cursor.close()
     conn.close()
 
-    flash(f"User '{username}' deleted.", "delete")
+    flash(f"User '{username}' moved to Recycle Bin.", "delete")
     return redirect(url_for("admin.manage_users"))
 
 
@@ -337,7 +337,7 @@ def manage_tournaments():
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
 
-    cursor.execute("SELECT * FROM admin_create_tournaments ORDER BY id DESC")
+    cursor.execute("SELECT * FROM admin_create_tournaments WHERE is_deleted = 0 ORDER BY id DESC")
     tournaments = cursor.fetchall()
 
     cursor.close()
@@ -472,7 +472,103 @@ def delete_tournament(id):
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    # Clean up dependent rows first to respect the FK on registrations
+    cursor.execute("UPDATE admin_create_tournaments SET is_deleted = 1, deleted_at = NOW() WHERE id = %s", (id,))
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    flash("Tournament moved to Recycle Bin.", "delete")
+    return redirect(url_for('admin.manage_tournaments'))
+
+
+# Admin Recycle Bin route
+@admin_bp.route("/recycle_bin")
+@admin_login_required
+def recycle_bin():
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute("""
+        SELECT fullname, username, email, mobile, deleted_at
+        FROM sign_up WHERE is_deleted = 1
+        ORDER BY deleted_at DESC
+    """)
+    deleted_users = cursor.fetchall()
+
+    cursor.execute("""
+        SELECT id, tournament_name, game, start_date, deleted_at
+        FROM admin_create_tournaments WHERE is_deleted = 1
+        ORDER BY deleted_at DESC
+    """)
+    deleted_tournaments = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+
+    return render_template("admin/recycle_bin.html",
+                            deleted_users=deleted_users,
+                            deleted_tournaments=deleted_tournaments)
+
+
+# Restore User route
+@admin_bp.route("/restore_user/<username>")
+@admin_login_required
+def restore_user(username):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("UPDATE sign_up SET is_deleted = 0, deleted_at = NULL WHERE username = %s", (username,))
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    flash(f"User '{username}' restored.", "success")
+    return redirect(url_for("admin.recycle_bin"))
+
+
+# Restore Tournament route
+@admin_bp.route("/restore_tournament/<int:id>")
+@admin_login_required
+def restore_tournament(id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("UPDATE admin_create_tournaments SET is_deleted = 0, deleted_at = NULL WHERE id = %s", (id,))
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    flash("Tournament restored.", "success")
+    return redirect(url_for("admin.recycle_bin"))
+
+
+# Permanently Delete User route
+@admin_bp.route("/permanent_delete_user/<username>")
+@admin_login_required
+def permanent_delete_user(username):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("DELETE FROM sign_up WHERE username = %s", (username,))
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    flash(f"User '{username}' permanently deleted.", "delete")
+    return redirect(url_for("admin.recycle_bin"))
+
+
+# Permanently Delete Tournament route
+@admin_bp.route("/permanent_delete_tournament/<int:id>")
+@admin_login_required
+def permanent_delete_tournament(id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
     cursor.execute("DELETE FROM matches WHERE tournament_id = %s", (id,))
     cursor.execute("DELETE FROM registrations WHERE tournament_id = %s", (id,))
     cursor.execute("DELETE FROM admin_create_tournaments WHERE id = %s", (id,))
@@ -481,8 +577,8 @@ def delete_tournament(id):
     cursor.close()
     conn.close()
 
-    flash("Tournament deleted.", "delete")
-    return redirect(url_for('admin.manage_tournaments'))
+    flash("Tournament permanently deleted.", "delete")
+    return redirect(url_for("admin.recycle_bin"))
 
 
 # Admin Add Matches route
