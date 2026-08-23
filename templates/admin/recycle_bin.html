@@ -1,0 +1,59 @@
+{% extends "admin/admin_base.html" %}
+
+{% block content %}
+
+<h2>Recycle Bin</h2>
+
+<h3>Deleted Tournaments</h3>
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Tournament Name</th>
+        <th>Game</th>
+        <th>Start Date</th>
+        <th>Deleted On</th>
+        <th>Action</th>
+    </tr>
+    {% for t in deleted_tournaments %}
+    <tr>
+        <td>{{ t.id }}</td>
+        <td>{{ t.tournament_name }}</td>
+        <td>{{ t.game }}</td>
+        <td>{{ t.start_date }}</td>
+        <td>{{ t.deleted_at }}</td>
+        <td>
+            <a href="{{ url_for('admin.restore_tournament', id=t.id) }}">Restore</a> |
+            <a href="{{ url_for('admin.permanent_delete_tournament', id=t.id) }}"
+               onclick="return confirm('Permanently delete this tournament? This cannot be undone.');">Delete Forever</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+<h3>Deleted Users</h3>
+<table>
+    <tr>
+        <th>Full Name</th>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Mobile</th>
+        <th>Deleted On</th>
+        <th>Action</th>
+    </tr>
+    {% for u in deleted_users %}
+    <tr>
+        <td>{{ u.fullname }}</td>
+        <td>{{ u.username }}</td>
+        <td>{{ u.email }}</td>
+        <td>{{ u.mobile }}</td>
+        <td>{{ u.deleted_at }}</td>
+        <td>
+            <a href="{{ url_for('admin.restore_user', username=u.username) }}">Restore</a> |
+            <a href="{{ url_for('admin.permanent_delete_user', username=u.username) }}"
+               onclick="return confirm('Permanently delete this user? This cannot be undone.');">Delete Forever</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}
