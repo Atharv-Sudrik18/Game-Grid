@@ -8,7 +8,12 @@ import os
 
 user_bp = Blueprint("user", __name__, url_prefix="/user")
 load_dotenv()
-client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
+
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
+if not GEMINI_API_KEY:
+    print("WARNING: GEMINI_API_KEY is not set on this environment. AI Assistant will not work.")
+
+client = genai.Client(api_key=GEMINI_API_KEY)
 
 
 # User All Routes
@@ -347,6 +352,44 @@ def user_notifications():
     return render_template("user/user_notifications.html", notifications=notifications)
 
 
+# User Contact route
+@user_bp.route("/contact", methods=["GET", "POST"])
+def user_contact():
+    if "username" not in session:
+        return redirect(url_for("main.login"))
+
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute("""
+        SELECT fullname, email
+        FROM sign_up
+        WHERE username=%s
+    """, (session["username"],))
+    user = cursor.fetchone()
+
+    if request.method == "POST":
+        name = request.form["name"]
+        email = request.form["email"]
+        subject = request.form["subject"]
+        message = request.form["message"]
+
+        cursor.execute("""
+            INSERT INTO contact(name, email, subject, message)
+            VALUES (%s, %s, %s, %s)
+        """, (name, email, subject, message))
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+        flash("Message sent successfully!", "success")
+        return redirect(url_for("user.user_contact"))
+
+    cursor.close()
+    conn.close()
+    return render_template("user/user_contact.html", user=user)
+
+
 # User Logout Confirmation route
 @user_bp.route("/logout_page")
 def logout_page():
@@ -370,9 +413,12 @@ def chatbox():
 
 @user_bp.route("/chat", methods=["POST"])
 def chat():
-    
+
     if "username" not in session:
         return jsonify({"reply": "Please login first."}), 401
+
+    if not GEMINI_API_KEY:
+        return jsonify({"reply": "AI Assistant is not configured on this server. Please contact the administrator."}), 503
 
     try:
         data = request.get_json()
@@ -384,13 +430,14 @@ def chat():
             return jsonify({"reply": "Message cannot be empty."})
 
         response = client.models.generate_content(
-            model="gemini-3.6-flash",
+            model="gemini-2.5-flash-lite",
             contents=message
         )
 
         return jsonify({"reply": response.text})
 
     except Exception as e:
+        print("Gemini Error:", e)
         return jsonify({
             "reply": f"Error: {str(e)}"
         })
