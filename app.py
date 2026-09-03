@@ -1,4 +1,4 @@
-from flask import Flask # type: ignore
+from flask import Flask  # type: ignore
 
 from main import main_bp
 from user import user_bp
