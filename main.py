@@ -1,4 +1,4 @@
-  from flask import Blueprint, render_template, request, redirect, url_for, session, jsonify  # type: ignore[import]
+from flask import Blueprint, render_template, request, redirect, url_for, session, jsonify  # type: ignore[import]
 from db import get_db_connection
 
 
@@ -89,7 +89,7 @@ def login():
         conn = get_db_connection()
         cursor = conn.cursor()
 
-        sql = "SELECT * FROM sign_up WHERE username=%s AND password=%s"   
+        sql = "SELECT * FROM sign_up WHERE username=%s AND password=%s"
         values = (username, password)
 
         cursor.execute(sql, values)
@@ -102,9 +102,13 @@ def login():
             session["username"] = username
             return redirect(url_for("user.user_dashboard"))
         else:
-            return render_template("login.html", error="Invalid username or password. Please try again.")
+            return render_template(
+                "login.html",
+                error="Invalid username or password. Please try again."
+            )
 
     return render_template("login.html")
+
 
 # User Signup route
 @main_bp.route("/user_signup", methods=["GET", "POST"])
@@ -161,7 +165,10 @@ def forgot_password():
             session["reset_username"] = username
             return redirect(url_for("main.reset_password"))
         else:
-            return render_template("forgot_password.html", error="No account found with that username and email.")
+            return render_template(
+                "forgot_password.html",
+                error="No account found with that username and email."
+            )
 
     return render_template("forgot_password.html")
 
@@ -177,7 +184,10 @@ def reset_password():
         confirm_password = request.form["confirm_password"]
 
         if new_password != confirm_password:
-            return render_template("reset_password.html", error="Passwords do not match.")
+            return render_template(
+                "reset_password.html",
+                error="Passwords do not match."
+            )
 
         conn = get_db_connection()
         cursor = conn.cursor()
@@ -193,4 +203,4 @@ def reset_password():
         session.pop("reset_username", None)
         return redirect(url_for("main.login"))
 
-    return render_template("reset_password.html")      
+    return render_template("reset_password.html")
