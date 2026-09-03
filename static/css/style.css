@@ -60,6 +60,21 @@ header{
     animation: shake 0.3s ease-in-out;
 }
 
+.alert-success {
+    background: #dcfce7;
+    color: #15803d;
+    border: 1px solid #86efac;
+    border-left: 5px solid #22c55e;
+    padding: 12px 18px;
+    border-radius: 10px;
+    margin: 15px auto 20px;
+    max-width: 600px;
+    font-weight: 600;
+    font-size: 15px;
+    text-align: center;
+    animation: shake 0.3s ease-in-out;
+}
+
 @keyframes shake {
     0%, 100% { transform: translateX(0); }
     20% { transform: translateX(-6px); }
