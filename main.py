@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, session, jsonify  # type: ignore[import]
+from flask import Blueprint, render_template, request, redirect, url_for, session, jsonify, flash  # type: ignore[import]
 from db import get_db_connection
 
 
@@ -36,7 +36,9 @@ def contact():
         conn.commit()
         cursor.close()
         conn.close()
-        return "Message sent successfully!"
+
+        flash("Message sent successfully!", "success")
+        return redirect(url_for("main.contact"))
     return render_template("contact.html")
 
 
