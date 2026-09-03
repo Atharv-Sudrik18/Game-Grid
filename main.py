@@ -114,6 +114,7 @@ def login():
 
 # User Signup route
 @main_bp.route("/user_signup", methods=["GET", "POST"])
+@main_bp.route("/user_signup", methods=["GET", "POST"])
 def user_signup():
     if request.method == "POST":
 
@@ -140,7 +141,9 @@ def user_signup():
         cursor.close()
         conn.close()
 
-        return redirect(url_for("main.login"))
+        session["username"] = username
+        flash("Account created successfully!", "success")
+        return redirect(url_for("user.user_dashboard"))
     return render_template("user_signup.html")
 
 
