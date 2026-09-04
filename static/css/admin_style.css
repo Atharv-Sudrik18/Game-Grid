@@ -619,7 +619,7 @@ footer p{
     flex-direction:column;
     align-items:flex-start;
     height:auto;
-    position:relative;
+    position:relative;   /* NEW — anchors the absolute profile icon */
 }
 
 .logo{
@@ -639,10 +639,11 @@ footer p{
 }
 
 .profile-dropdown{
-    position:absolute;
-    top:15px;
-    right:15px;
-    margin-left:0;
+    position:absolute;   /* NEW */
+    top:15px;             /* NEW */
+    right:15px;           /* NEW */
+    margin-left:0;        /* NEW — overrides desktop's margin-left:20px */
 }
 
 }
+
