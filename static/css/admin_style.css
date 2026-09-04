@@ -619,6 +619,7 @@ footer p{
     flex-direction:column;
     align-items:flex-start;
     height:auto;
+    position:relative;
 }
 
 .logo{
@@ -635,6 +636,13 @@ footer p{
 
 .nav-links a{
     line-height:40px;
+}
+
+.profile-dropdown{
+    position:absolute;
+    top:15px;
+    right:15px;
+    margin-left:0;
 }
 
 }
