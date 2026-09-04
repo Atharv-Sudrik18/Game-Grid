@@ -663,13 +663,12 @@ footer p {
     /* ================= PROFILE AREA ================= */
 
     .profile-dropdown {
-        width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: flex-start;
-        margin-top: 0;
-        padding: 8px 5px 0;
-        position: relative;
+        position: absolute;
+        top: 14px;
+        right: 12px;
+        width: auto;
+        margin: 0;
+        padding: 0;
         z-index: 99999;
         flex-shrink: 0;
     }
@@ -691,11 +690,12 @@ footer p {
         position: absolute;
 
         /*
-         * Open from the left side of the profile.
-         * This prevents it from going outside the phone.
+         * Profile icon now sits in the top-right corner,
+         * so open the popup from the right edge to stay
+         * on-screen (same as desktop behavior).
          */
-        left: 0;
-        right: auto;
+        left: auto;
+        right: 0;
         top: 60px;
         width: 190px;
 
@@ -822,10 +822,9 @@ footer p {
     /* ================= PROFILE ================= */
 
     .profile-dropdown {
-
-        padding-left: 5px;
-
-        padding-top: 8px;
+        position: absolute;
+        top: 12px;
+        right: 8px;
     }
 
 
@@ -839,8 +838,8 @@ footer p {
     /* ================= POPUP ================= */
 
     .dropdown-content {
-        left: 0;
-        right: auto;
+        left: auto;
+        right: 0;
         top: 58px;
         width: 180px;
         max-width: calc(100vw - 25px);
