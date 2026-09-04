@@ -38,12 +38,12 @@ header p {
 /*================ NAVIGATION ================*/
 
 .navbar {
-    min-height: 90px;
+    height: 85px;
     background: linear-gradient(90deg, #16213e, #2c4fb8);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 60px;
+    padding: 0 25px;
     position: relative;
     overflow: visible;
 }
@@ -537,19 +537,19 @@ footer p {
 
 /*================ MOBILE ================*/
 
-@media(max-width:768px) {
+@media(max-width:786px) {
 
     /* ================= NAVBAR ================= */
 
     .navbar {
-        min-height: auto;
+        height: auto;
 
         display: flex;
         flex-direction: column;
 
-        align-items: stretch;
+        align-items: flex-start;
 
-        padding: 14px 10px;
+        padding: 15px;
 
         position: relative;
 
@@ -664,8 +664,8 @@ footer p {
 
     .profile-dropdown {
         position: absolute;
-        top: 14px;
-        right: 12px;
+        top: 15px;
+        right: 15px;
         width: auto;
         margin: 0;
         padding: 0;
@@ -735,114 +735,6 @@ footer p {
         background: #2563eb;
 
         color: #fff !important;
-    }
-}
-
-
-/*=====================================================*
-* SMALL PHONES
-*=====================================================*/
-
-@media(max-width:420px) {
-
-    .navbar {
-        padding: 12px 7px;
-    }
-
-
-    /* ================= LOGO ================= */
-
-    .logo {
-        padding-left: 7px;
-    }
-
-    .logo img {
-        width: 40px;
-    }
-
-    .logo h1 {
-        font-size: 21px;
-    }
-
-
-    /* ================= NAVIGATION ================= */
-
-    .nav-links {
-
-        width: 100%;
-        display: flex !important;
-        flex-direction: row !important;
-        flex-wrap: nowrap !important;
-        overflow-x: auto !important;
-        overflow-y: hidden !important;
-        gap: 22px;
-        padding: 8px 5px 8px;
-        /* Firefox */
-        scrollbar-width: auto;
-        scrollbar-color: #22c55e transparent;
-    }
-
-
-    /* ================= SMALL PHONE SCROLLBAR ================= */
-
-    .nav-links {
-        scrollbar-width: thin;
-        scrollbar-color: #22c55e transparent;
-    }
-
-    .nav-links::-webkit-scrollbar {
-        height: 7px;
-    }
-
-    .nav-links::-webkit-scrollbar-track {
-        background: transparent;
-        border-radius: 10px;
-    }
-
-    .nav-links::-webkit-scrollbar-thumb {
-        background: #22c55e;
-        border-radius: 10px;
-    }
-
-    .nav-links::-webkit-scrollbar-thumb:hover {
-        background: #16a34a;
-    }
-
-
-    .nav-links a {
-
-        font-size: 14px;
-
-        white-space: nowrap;
-
-        flex: 0 0 auto;
-    }
-
-
-    /* ================= PROFILE ================= */
-
-    .profile-dropdown {
-        position: absolute;
-        top: 12px;
-        right: 8px;
-    }
-
-
-    .profile-img {
-
-        width: 46px;
-        height: 46px;
-    }
-
-
-    /* ================= POPUP ================= */
-
-    .dropdown-content {
-        left: auto;
-        right: 0;
-        top: 58px;
-        width: 180px;
-        max-width: calc(100vw - 25px);
     }
 }
 
