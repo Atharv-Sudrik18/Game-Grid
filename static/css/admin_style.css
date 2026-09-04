@@ -612,33 +612,37 @@ footer p{
 
 
 /* Mobile */
-@media(max-width:768px) {
+@media(max-width:768px){
 
-    nav {
-        flex-direction: column;
-        gap: 20px;
-        padding: 20px;
-    }
-
-    .nav-links {
-        flex-direction: column;
-        width: 100%;
-
-    }
-
-    .nav-links a {
-        text-align: center;
-    }
-
-    .profile-menu {
-        margin-top: 10px;
-    }
-
-    .profile-dropdown {
-        position: absolute;
-        top: 15px;
-        right: 15px;
-        margin-left: 0;
-    }
-
+.navbar{
+    padding:15px;
+    flex-direction:column;
+    align-items:flex-start;
+    height:auto;
+    position:relative;
 }
+
+.logo{
+    margin-bottom:15px;
+}
+
+.nav-scroll{
+    width:100%;
+}
+
+.nav-links{
+    gap:25px;
+}
+
+.nav-links a{
+    line-height:40px;
+}
+
+.profile-dropdown{
+    position:absolute;
+    top:15px;
+    right:15px;
+    margin-left:0;
+}
+
+        }
